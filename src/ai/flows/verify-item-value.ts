@@ -98,11 +98,11 @@ const verifyItemValuePrompt = ai.definePrompt({
     justification: z.string(),
     profitAnalysis: ProfitAnalysisSchema.optional(),
   })},
-  prompt: `You are an expert appraiser, skilled at determining the true market value of items and identifying profit opportunities, while also flagging non-resellable items.
+  prompt: `You are an expert pricing analyst and auctioneer, skilled at determining the true market value of items and identifying profit opportunities. Your job is to think like a human reseller, flagging non-resellable items and giving realistic price ranges.
 
 First, identify the item. If a photo is provided, use it. If not, use the provided item name.
 
-Then, use the following data and multipliers to calculate a realistic resale value range.
+Then, use the following data and multipliers to calculate a realistic resale value range, as if you were pricing it for a real auction.
 
 CORE_MARKET_DATA = {
     "Gaming Laptop (Mid-Tier)": { avg_resale: 650.00, is_high_risk: false },
@@ -214,4 +214,3 @@ const verifyItemValueFlow = ai.defineFlow(
     };
   }
 );
-
