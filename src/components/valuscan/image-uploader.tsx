@@ -66,8 +66,10 @@ export function ImageUploader({ onImageUpload, disabled = false }: ImageUploader
       navigator.mediaDevices.enumerateDevices().then(allDevices => {
         const videoDevices = allDevices.filter(device => device.kind === 'videoinput');
         setDevices(videoDevices);
+        const initialDeviceId = videoDevices.find(d => d.label.toLowerCase().includes('back'))?.deviceId || videoDevices[0]?.deviceId;
+        setActiveDeviceId(initialDeviceId);
         setIsCameraOpen(true);
-        startStream(videoDevices[0]?.deviceId);
+        startStream(initialDeviceId);
       });
     } else if (mode !== 'camera' && isCameraOpen) {
       stopStream();
@@ -75,12 +77,13 @@ export function ImageUploader({ onImageUpload, disabled = false }: ImageUploader
     }
 
     return () => {
+      // Ensure stream is stopped on component unmount
       if(isCameraOpen) {
         stopStream();
-        setIsCameraOpen(false);
       }
     };
-  }, [mode, isCameraOpen, startStream, stopStream]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
 
   const handleFileProcessing = useCallback(async (file: File) => {
     if (file.type && !file.type.startsWith('image/')) {
@@ -220,13 +223,13 @@ export function ImageUploader({ onImageUpload, disabled = false }: ImageUploader
         />
         <Button
           variant="destructive"
-          size="icon"
-          className="absolute top-2 right-2 rounded-full h-8 w-8 z-10"
+          className="absolute top-2 right-2 rounded-full h-auto z-10"
           onClick={handleRemoveImage}
           disabled={disabled}
-          aria-label="Remove image"
+          aria-label="Retake photo"
         >
-          <X className="h-4 w-4" />
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Retake
         </Button>
       </div>
     )
@@ -235,10 +238,10 @@ export function ImageUploader({ onImageUpload, disabled = false }: ImageUploader
   return (
     <Card className="w-full max-w-md mx-auto">
         <canvas ref={canvasRef} className="hidden" />
-        <Tabs value={mode} onValueChange={(v) => setMode(v as any)} className="w-full">
+        <Tabs defaultValue="upload" value={mode} onValueChange={(v) => setMode(v as any)} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="upload" disabled={disabled}>Upload File</TabsTrigger>
-                <TabsTrigger value="camera" disabled={disabled}>Use Camera</TabsTrigger>
+                <TabsTrigger value="upload" disabled={disabled}> <Upload className="mr-2 h-4 w-4"/> Upload File</TabsTrigger>
+                <TabsTrigger value="camera" disabled={disabled}><Camera className="mr-2 h-4 w-4"/>Use Camera</TabsTrigger>
             </TabsList>
             <TabsContent value="upload">
                 <div
