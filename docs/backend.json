@@ -32,15 +32,34 @@
           "type": "string",
           "description": "Timestamp of when the user account was created.",
           "format": "date-time"
+        },
+        "tier": {
+          "type": "string",
+          "description": "The user's membership tier.",
+          "enum": [
+            "Community",
+            "Pro",
+            "Ambassador"
+          ]
+        },
+        "subscriptionStatus": {
+          "type": "string",
+          "description": "The current status of the user's subscription (if applicable).",
+          "enum": [
+            "active",
+            "inactive",
+            "past_due"
+          ]
+        },
+        "stripeCustomerId": {
+          "type": "string",
+          "description": "The user's Stripe customer ID for billing."
         }
       },
       "required": [
         "id",
         "email",
-        "username",
-        "firstName",
-        "lastName",
-        "createdAt"
+        "tier"
       ]
     },
     "Item": {
@@ -56,7 +75,7 @@
         },
         "userId": {
           "type": "string",
-          "description": "Reference to the User who listed this item. (Relationship: User 1:N Item)"
+          "description": "Reference to the User who listed this item."
         },
         "title": {
           "type": "string",
@@ -68,7 +87,11 @@
         },
         "price": {
           "type": "number",
-          "description": "Price of the item."
+          "description": "The user-defined price of the item."
+        },
+        "aiEstimatedValue": {
+          "type": "number",
+          "description": "The market value of the item as estimated by AI."
         },
         "imageUrl": {
           "type": "string",
@@ -83,17 +106,25 @@
         "category": {
           "type": "string",
           "description": "Category of the item."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the item in the marketplace.",
+          "enum": [
+            "listed",
+            "sold",
+            "shipped"
+          ]
         }
       },
       "required": [
         "id",
         "userId",
         "title",
-        "description",
         "price",
         "imageUrl",
         "createdAt",
-        "category"
+        "status"
       ]
     },
     "Sale": {
@@ -109,11 +140,15 @@
         },
         "itemId": {
           "type": "string",
-          "description": "Reference to the Item that was sold. (Relationship: Item 1:N Sale)"
+          "description": "Reference to the Item that was sold."
         },
         "buyerId": {
           "type": "string",
-          "description": "Reference to the User who purchased the item. (Relationship: User 1:N Sale)"
+          "description": "Reference to the User who purchased the item."
+        },
+        "sellerId": {
+          "type": "string",
+          "description": "Reference to the User who sold the item."
         },
         "saleDate": {
           "type": "string",
@@ -124,18 +159,18 @@
           "type": "number",
           "description": "Price at which the item was sold."
         },
-        "commissionAmount": {
-          "type": "number",
-          "description": "Commission amount charged for the sale."
+        "ethicalContributionId": {
+          "type": "string",
+          "description": "Reference to the associated ethical contribution for this sale."
         }
       },
       "required": [
         "id",
         "itemId",
         "buyerId",
+        "sellerId",
         "saleDate",
-        "salePrice",
-        "commissionAmount"
+        "salePrice"
       ]
     },
     "Pickup": {
@@ -151,7 +186,7 @@
         },
         "saleId": {
           "type": "string",
-          "description": "Reference to the Sale for which the pickup is requested. (Relationship: Sale 1:N Pickup)"
+          "description": "Reference to the Sale for which the pickup is requested."
         },
         "pickupDate": {
           "type": "string",
@@ -179,7 +214,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "EthicalContribution",
       "type": "object",
-      "description": "Represents an ethical funding contribution made by a user.",
+      "description": "Represents an ethical funding contribution made from a sale for the LEAN Foundation.",
       "properties": {
         "id": {
           "type": "string",
@@ -188,7 +223,7 @@
         },
         "saleId": {
           "type": "string",
-          "description": "Reference to the Sale for which the contribution is made. (Relationship: Sale 1:N EthicalContribution)"
+          "description": "Reference to the Sale from which the contribution is made."
         },
         "amount": {
           "type": "number",
@@ -198,18 +233,13 @@
           "type": "string",
           "description": "Date of the contribution.",
           "format": "date-time"
-        },
-        "campaignName": {
-          "type": "string",
-          "description": "Name of the ethical campaign the contribution is for."
         }
       },
       "required": [
         "id",
         "saleId",
         "amount",
-        "contributionDate",
-        "campaignName"
+        "contributionDate"
       ]
     }
   },
@@ -228,31 +258,11 @@
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Stores user profiles. Path-based ownership for private user data.",
+          "description": "Stores user profiles, including their tier and subscription status.",
           "params": [
             {
               "name": "userId",
               "description": "The unique identifier for the user."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/items/{itemId}",
-        "definition": {
-          "entityName": "Item",
-          "schema": {
-            "$ref": "#/backend/entities/Item"
-          },
-          "description": "Stores items listed by a specific user. Facilitates simple security rules based on the user ID.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            },
-            {
-              "name": "itemId",
-              "description": "The unique identifier for the item."
             }
           ]
         }
@@ -264,7 +274,7 @@
           "schema": {
             "$ref": "#/backend/entities/Item"
           },
-          "description": "This collection contains all items listed on the marketplace to support efficient listing and discovery. Includes denormalized 'userId' from the parent `/users/{userId}/items/{itemId}` collection to enable list operations based on the user. It denormalizes `userId` for authorization independence.",
+          "description": "This collection contains all items listed on the marketplace. It includes a denormalized 'userId' to enable ownership-based security rules.",
           "params": [
             {
               "name": "itemId",
@@ -280,7 +290,7 @@
           "schema": {
             "$ref": "#/backend/entities/Sale"
           },
-          "description": "Sales data is stored in a top-level collection to allow for efficient querying and aggregation of sales data across all users. It includes denormalized `itemId`, `buyerId` and `userId` (seller) for authorization independence. This also facilitates reporting and analytics on sales trends.",
+          "description": "Sales data is stored in a top-level collection. It includes denormalized 'itemId', 'buyerId', and 'sellerId' for authorization and querying.",
           "params": [
             {
               "name": "saleId",
@@ -296,7 +306,7 @@
           "schema": {
             "$ref": "#/backend/entities/Pickup"
           },
-          "description": "Pickup requests are stored in a top-level collection, as they involve interactions between buyers, sellers, and potentially delivery services. Includes denormalized `saleId` for authorization independence.",
+          "description": "Pickup requests for sold items.",
           "params": [
             {
               "name": "pickupId",
@@ -312,7 +322,7 @@
           "schema": {
             "$ref": "#/backend/entities/EthicalContribution"
           },
-          "description": "Ethical contributions are stored in a top-level collection for reporting and tracking purposes. Includes denormalized `saleId` for authorization independence.",
+          "description": "A ledger for all ethical contributions made from sales.",
           "params": [
             {
               "name": "contributionId",
@@ -322,6 +332,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to support the ValuScan application, focusing on user-owned data and marketplace functionalities. The core principle is Authorization Independence, achieved through denormalization of user IDs in subcollections, avoiding the need for `get()` calls in security rules. This supports atomic operations and improves security and debuggability. Structural segregation is used to maintain a homogeneous security posture within collections.\n\n- `/users/{userId}`: Stores user profiles. This is path-based ownership for private user data.\n- `/users/{userId}/items/{itemId}`: Stores items listed by a specific user, enabling easy retrieval of items owned by a user. This structure facilitates simple security rules based on the user ID.\n- `/items/{itemId}`: This collection contains all items listed on the marketplace to support efficient listing and discovery. Includes denormalized `userId` from the parent `/users/{userId}/items/{itemId}` collection to enable list operations based on the user. It denormalizes `userId` for authorization independence.\n- `/sales/{saleId}`: Sales data is stored in a top-level collection to allow for efficient querying and aggregation of sales data across all users. It includes denormalized `itemId`, `buyerId` and `userId` (seller) for authorization independence. This also facilitates reporting and analytics on sales trends.\n- `/pickups/{pickupId}`: Pickup requests are stored in a top-level collection, as they involve interactions between buyers, sellers, and potentially delivery services. It includes denormalized `saleId` for authorization independence.\n- `/ethical_contributions/{contributionId}`: Ethical contributions are stored in a top-level collection for reporting and tracking purposes. It includes denormalized `saleId` for authorization independence.\n\nThis design supports the required QAPs (Queries that Protect) by:\n\n1.  **Authorization Independence:** Denormalizing `userId` into `/items`, `/sales`, `/pickups`, and `/ethical_contributions` collections allows security rules to validate user access without relying on `get()` calls to parent documents.\n2.  **Structural Segregation:** Separating user-owned items from the global `/items` collection allows different security rules to be applied.\n\nThe denormalization strategy ensures that security rules can be written to enforce ownership and access control at each level without complex hierarchical dependencies."
+    "reasoning": "The Firestore structure has been updated to support the core business logic. The User entity now includes 'tier', 'subscriptionStatus', and 'stripeCustomerId' to manage user roles and billing. The Item entity has a 'status' to track its lifecycle (listed, sold, shipped) and 'aiEstimatedValue'. The Sale entity now more clearly separates seller and buyer IDs and links to an EthicalContribution, which is its own top-level collection to serve as a proper ledger for the LEAN Foundation. This denormalized, segregated structure simplifies security rules and supports efficient queries for marketplace, user-specific, and administrative functions."
   }
 }
