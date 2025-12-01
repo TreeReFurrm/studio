@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { ImageUploader } from './image-uploader';
@@ -195,7 +195,7 @@ export function ListingForm() {
   }
 
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card>
           <CardHeader>
@@ -353,6 +353,6 @@ export function ListingForm() {
             </Button>
         </div>
       </form>
-    </Form>
+    </FormProvider>
   );
 }

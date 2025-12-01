@@ -32,7 +32,6 @@ const ScanItemOutputSchema = z.object({
   // BUSINESS LOGIC FLAG
   isConsignmentViable: z.boolean().describe('True if the item is AUTHENTIC and the priceType is RESALE. This flag gates the consignment flow.'),
 });
-export type ScanItemOutput = z.infer<typeof ScanItemOutputSchema>;
 
 async function callScanItemPrompt(input: z.infer<typeof ScanItemInputSchema>): Promise<ScanItemOutput> {
   const {output} = await scanItemPrompt(input);
