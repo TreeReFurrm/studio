@@ -4,11 +4,13 @@
 import { useUser, useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2, Settings } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { doc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function AccountPage() {
   const { user, isUserLoading, userError } = useUser();
@@ -67,11 +69,25 @@ export default function AccountPage() {
               </Badge>
             )}
           </div>
+           {userProfile?.priceStrategy && (
+             <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">AI Price Strategy</span>
+                 <Badge variant="outline">{userProfile.priceStrategy}</Badge>
+            </div>
+           )}
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">User ID</span>
             <span className="font-mono text-xs text-muted-foreground">{user.uid}</span>
           </div>
         </CardContent>
+        <CardFooter>
+           <Button asChild variant="outline">
+              <Link href="/profile-setup">
+                <Settings className="mr-2 h-4 w-4" />
+                Calibrate Your Profile
+              </Link>
+            </Button>
+        </CardFooter>
       </Card>
     </div>
   );
