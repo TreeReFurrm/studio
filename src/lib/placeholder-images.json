@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "chair",
+      "description": "A comfortable brown leather armchair.",
+      "imageUrl": "https://images.unsplash.com/photo-1605702098590-d552a98dc93d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhcm1jaGFpcnxlbnwwfHx8fDE3NjQ1NzE1ODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "armchair"
+    },
+    {
+      "id": "lamp",
+      "description": "A vintage desk lamp with a green shade.",
+      "imageUrl": "https://images.unsplash.com/photo-1619608135352-868e8313e121?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxkZXNrJTIwbGFtcHxlbnwwfHx8fDE3NjQ1MTkxMjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "desk lamp"
+    },
+    {
+      "id": "bicycle",
+      "description": "A classic red road bicycle.",
+      "imageUrl": "https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiaWN5Y2xlfGVufDB8fHx8MTc2NDU3MTU4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bicycle"
+    },
+    {
+      "id": "books",
+      "description": "A stack of old hardcover books.",
+      "imageUrl": "https://images.unsplash.com/photo-1667312939934-60fc3bfa4ec0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxib29rc3xlbnwwfHx8fDE3NjQ1MjExMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "books"
+    },
+    {
+      "id": "camera",
+      "description": "A retro film camera.",
+      "imageUrl": "https://images.unsplash.com/photo-1668414312535-1da51e4f81c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmaWxtJTIwY2FtZXJhfGVufDB8fHx8MTc2NDUzNDQxNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "film camera"
+    },
+    {
+      "id": "guitar",
+      "description": "An acoustic guitar leaning against a wall.",
+      "imageUrl": "https://images.unsplash.com/photo-1541689592655-f5f52825a3b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhY291c3RpYyUyMGd1aXRhcnxlbnwwfHx8fDE3NjQ1Mjc3ODZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "acoustic guitar"
+    }
+  ]
 }
