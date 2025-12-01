@@ -4,7 +4,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-export const ScanItemInputSchema = z.object({
+const ScanItemInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
@@ -35,7 +35,7 @@ const ScanItemOutputSchema = z.object({
 });
 export type ScanItemOutput = z.infer<typeof ScanItemOutputSchema>;
 
-export async function scanItem(input: ScanItemInput): Promise<ScanItemOutput> {
+async function callScanItemPrompt(input: ScanItemInput): Promise<ScanItemOutput> {
   const {output} = await scanItemPrompt(input);
   if (!output) {
     throw new Error('Failed to get a structured response from the AI.');
@@ -43,7 +43,7 @@ export async function scanItem(input: ScanItemInput): Promise<ScanItemOutput> {
   return output;
 }
 
-export const scanItemPrompt = ai.definePrompt({
+const scanItemPrompt = ai.definePrompt({
   name: 'scanItemPrompt',
   input: { schema: ScanItemInputSchema },
   output: { schema: ScanItemOutputSchema },
@@ -87,13 +87,15 @@ Respond strictly with the requested JSON output structure.`,
 });
 
 
-export const scanItemFlow = ai.defineFlow(
+export async function scanItem(input: ScanItemInput): Promise<ScanItemOutput> {
+    return await callScanItemPrompt(input);
+}
+
+ai.defineFlow(
   {
     name: 'scanItemFlow',
     inputSchema: ScanItemInputSchema,
     outputSchema: ScanItemOutputSchema,
   },
-  async (input) => {
-    return await scanItem(input);
-  }
+  scanItem
 );

@@ -11,14 +11,33 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import {
-  AmbassadorListSchema,
-  type AmbassadorListOutput,
-} from '@/ai/schemas/ambassador-schema';
-import { ListingDetailsSchema } from '@/ai/schemas/listing-details';
+
+
+// Schema for a single ambassador
+const AmbassadorSchema = z.object({
+  id: z.string().describe('Unique identifier for the Ambassador.'),
+  name: z.string().describe('Full name of the Ambassador.'),
+  area: z.string().describe('Geographical service area.'),
+  specialty: z.string().describe('Area of expertise (e.g., Mid-Century Furniture, Electronics).'),
+  rating: z.number().describe('Ambassador rating on a scale of 1-5.'),
+  expectedPickupTime: z.string().describe('Estimated time for item pickup.'),
+});
+export type Ambassador = z.infer<typeof AmbassadorSchema>;
+
+// Schema for the output, which is a list of ambassadors
+const AmbassadorListSchema = z.object({
+  ambassadors: z.array(AmbassadorSchema).describe('A list of selected Ambassadors.'),
+});
+export type AmbassadorListOutput = z.infer<typeof AmbassadorListSchema>;
+
+const ListingDetailsSchema = z.object({
+  title: z.string().describe('The title of the item listing.'),
+  description: z.string().describe('The detailed description of the item.'),
+  price: z.number().describe('The price of the item.'),
+});
 
 // The input combines listing details with the user's chosen action and location.
-export const AmbassadorFlowInputSchema = ListingDetailsSchema.extend({
+const AmbassadorFlowInputSchema = ListingDetailsSchema.extend({
   action: z
     .enum(['SELL', 'DONATE'])
     .describe('The user’s chosen action: SELL (Consignment) or DONATE.'),
@@ -114,7 +133,7 @@ const selectAmbassadorPrompt = ai.definePrompt({
 });
 
 
-export const selectAmbassadorFlow = ai.defineFlow(
+const selectAmbassadorFlow = ai.defineFlow(
   {
     name: 'selectAmbassadorFlow',
     inputSchema: AmbassadorFlowInputSchema,

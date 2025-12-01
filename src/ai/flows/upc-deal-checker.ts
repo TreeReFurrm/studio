@@ -72,7 +72,7 @@ export async function upcDealChecker(input: UpcInput): Promise<UpcOutput> {
   return upcDealCheckerFlow(input);
 }
 
-export const upcDealCheckerFlow = ai.defineFlow(
+const upcDealCheckerFlow = ai.defineFlow(
   {
     name: 'upcDealCheckerFlow',
     inputSchema: UpcInputSchema,

@@ -44,7 +44,7 @@ async function find_local_ambassadors(zip_code: string, required_service: string
 
 // --- Zod Schemas for Input and Output ---
 
-export const ConsignmentInputSchema = z.object({
+const ConsignmentInputSchema = z.object({
   listingId: z.string().describe("The unique ID of the newly created listing."),
   itemName: z.string().describe("The name of the item."),
   userZipCode: z.string().describe("The ZIP code for item pickup."),
@@ -52,7 +52,7 @@ export const ConsignmentInputSchema = z.object({
 });
 export type ConsignmentInput = z.infer<typeof ConsignmentInputSchema>;
 
-export const ConsignmentOutputSchema = z.object({
+const ConsignmentOutputSchema = z.object({
   listingId: z.string(),
   listingStatus: z.string(),
   assignedAmbassadorId: z.string().optional(),

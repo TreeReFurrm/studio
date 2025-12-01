@@ -9,8 +9,8 @@ import Image from 'next/image';
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
-import type { Ambassador, AmbassadorListOutput } from '@/ai/schemas/ambassador-schema';
-import { selectAmbassador, type AmbassadorFlowInput } from '@/ai/flows/select-ambassador';
+import { selectAmbassador, type AmbassadorFlowInput, type Ambassador, type AmbassadorListOutput } from '@/ai/flows/select-ambassador';
+
 
 // Define the required interface based on the URL query parameters
 interface ListingData {
@@ -209,7 +209,7 @@ export default function AmbassadorSelectionPage() {
               <p className="mt-2 text-muted-foreground">Searching network for best matches...</p>
             </div>
           ) : !viability?.isProfitable ? (
-             <div className="p-8 text-center bg-yellow-50 rounded-lg border border-yellow-200 space-y-3">
+            <div className="p-8 text-center bg-yellow-50 rounded-lg border border-yellow-200 space-y-3">
               <Sparkles className="w-8 h-8 text-yellow-600 mx-auto" />
               <p className="font-medium text-lg text-yellow-800">
                 Managed Fulfillment Not Currently Viable
@@ -232,11 +232,11 @@ export default function AmbassadorSelectionPage() {
             </div>
           ) : (
             <div className="p-8 text-center bg-gray-50 rounded-lg">
-                <p className="font-medium">Item has high Mission Contribution Value, but no Ambassador is currently available.</p>
-                <p className="text-sm text-muted-foreground">We will notify you when a match is available, or you can opt for the flexible DIY fulfillment option now.</p>
-                <Button variant="link" className="mt-2" onClick={() => handleFlexibleFulfillment()}>
-                    Opt for Flexible DIY Fulfillment Now
-                </Button>
+              <p className="font-medium">Item has high Mission Contribution Value, but no Ambassador is currently available.</p>
+              <p className="text-sm text-muted-foreground">We will notify you when a match is available, or you can opt for the flexible DIY fulfillment option now.</p>
+              <Button variant="link" className="mt-2" onClick={() => handleFlexibleFulfillment()}>
+                Opt for Flexible DIY Fulfillment Now
+              </Button>
             </div>
           )}
         </CardContent>
@@ -244,4 +244,3 @@ export default function AmbassadorSelectionPage() {
     </div>
   );
 }
-

@@ -40,13 +40,13 @@ const AUTHENTICITY_KNOWLEDGE_BASE: Record<string, string[]> = {
 
 // --- 2. Zod Schemas for Input and Output ---
 
-export const ScoutFakesInputSchema = z.object({
+const ScoutFakesInputSchema = z.object({
   itemName: z.string().describe("The item being scanned."),
   checkLocation: z.enum(["Auction Photo", "In-Hand Scan"]).describe("The context of the scan."),
 });
 export type ScoutFakesInput = z.infer<typeof ScoutFakesInputSchema>;
 
-export const ScoutFakesOutputSchema = z.object({
+const ScoutFakesOutputSchema = z.object({
   itemName: z.string(),
   verdict: z.enum(["AUTHENTIC", "POSSIBLE_FAKE", "NOT_APPLICABLE", "LOW_RISK"]),
   confidenceScore: z.number().describe("A score from 0-100 indicating confidence in the verdict."),
@@ -118,7 +118,5 @@ ai.defineFlow(
     inputSchema: ScoutFakesInputSchema,
     outputSchema: ScoutFakesOutputSchema,
   },
-  async (input) => {
-    return scoutFakes(input);
-  }
+  scoutFakes
 );

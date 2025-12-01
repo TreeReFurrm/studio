@@ -47,7 +47,7 @@ const ProfitAnalysisSchema = z.object({
 });
 
 const AuthenticitySchema = z.object({
-    verdict: z.enum(["AUTHENTIC", "POSSIBLE_FAKE", "NOT_APPLICABLE"]),
+    verdict: z.enum(["AUTHENTIC", "POSSIBLE_FAKE", "NOT_APPLICABLE", "LOW_RISK"]),
     confidenceScore: z.number(),
     reasons: z.array(z.string()),
 });

@@ -69,7 +69,7 @@ function findLocalAmbassadors(zipCode: string, requiredService: keyof typeof VAL
 
 // --- Zod Schemas for Input and Output ---
 
-export const SecondaryServiceInputSchema = z.object({
+const SecondaryServiceInputSchema = z.object({
   userId: z.string().describe("The ID of the user requesting the service."),
   zipCode: z.string().describe("The ZIP code where the service is needed."),
   serviceType: z.enum(['cleanout', 'organize', 'downsize']).describe("The type of service requested."),
@@ -77,7 +77,7 @@ export const SecondaryServiceInputSchema = z.object({
 });
 export type SecondaryServiceInput = z.infer<typeof SecondaryServiceInputSchema>;
 
-export const SecondaryServiceOutputSchema = z.object({
+const SecondaryServiceOutputSchema = z.object({
   requestId: z.string(),
   userId: z.string(),
   dateRequested: z.string(),
