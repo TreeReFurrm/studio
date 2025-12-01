@@ -232,7 +232,7 @@ export function VerificationTool() {
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select the valuation source/context" />
-                          </Trigger>
+                          </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                            {sources.map((s) => (
@@ -282,3 +282,4 @@ export function VerificationTool() {
     </div>
   );
 }
+
