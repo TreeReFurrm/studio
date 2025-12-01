@@ -114,7 +114,7 @@ const selectAmbassadorPrompt = ai.definePrompt({
 });
 
 
-const selectAmbassadorFlow = ai.defineFlow(
+export const selectAmbassadorFlow = ai.defineFlow(
   {
     name: 'selectAmbassadorFlow',
     inputSchema: AmbassadorFlowInputSchema,

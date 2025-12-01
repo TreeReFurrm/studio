@@ -4,8 +4,9 @@
 /**
  * @fileOverview Defines the Zod schemas for the Ambassador selection flow.
  *
- * - Ambassador - The schema for a single ambassador's profile.
+ * - AmbassadorSchema - The schema for a single ambassador's profile.
  * - AmbassadorListSchema - The schema for a list of ambassadors.
+ * - Ambassador - The type derived from AmbassadorSchema.
  * - AmbassadorListOutput - The type derived from AmbassadorListSchema.
  */
 
