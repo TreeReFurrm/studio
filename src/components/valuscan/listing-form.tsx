@@ -73,8 +73,8 @@ export function ListingForm() {
         return; 
       }
       
-      form.setValue('title', output.itemName);
-      form.setValue('description', output.appraisalNote);
+      form.setValue('title', output.suggestedTitle);
+      form.setValue('description', output.suggestedDescription);
       form.setValue('price', output.maxPrice); 
       form.setValue('tags', [output.categoryTag.replace(/_/g, ' ')]);
 
@@ -208,7 +208,7 @@ export function ListingForm() {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>AI-Suggested Title</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., Vintage Leather Armchair" {...field} />
                   </FormControl>
@@ -221,7 +221,7 @@ export function ListingForm() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>AI-Suggested Description</FormLabel>
                   <FormControl>
                     <Textarea placeholder="Describe your item..." rows={5} {...field} />
                   </FormControl>
