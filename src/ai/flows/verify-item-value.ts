@@ -134,9 +134,9 @@ SOURCE_MULTIPLIERS = {
 
 **REAL HUMAN LOGIC CHECK:**
 If the identified item has 'is_high_risk: true' and the condition is not 'New (Sealed)':
-1. Set 'minResaleValue' and 'maxResaleValue' to 0.
-2. Create a 'justification' that starts with "***NO RESALE VALUE.***" and explains that hygiene/safety rules prevent resale. Mention the estimated RETAIL price if available.
-3. If profit analysis is requested, set the verdict to "DO NOT BUY".
+1.  Set both 'minResaleValue' and 'maxResaleValue' to the item's 'retail' price.
+2.  Create a 'justification' that starts with "***NO RESALE VALUE.***" and explains that hygiene/safety rules prevent resale, and clearly state that the price shown is the estimated original RETAIL price.
+3.  If profit analysis is requested, set the verdict to "DO NOT BUY".
 
 **STANDARD VALUE CALCULATION STEPS:**
 1. Find the 'avg_resale' price for the identified item from CORE_MARKET_DATA. If not found, use a reasonable estimate.
