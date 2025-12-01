@@ -1,7 +1,7 @@
 
 import type { ReactNode } from 'react';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
-import { Home, ScanLine, PlusCircle, ShoppingCart, User, Bot } from 'lucide-react';
+import { Home, ScanLine, PlusCircle, ShoppingCart, User, Bot, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import { Header } from './header';
 
@@ -46,6 +46,14 @@ export function MainLayout({ children }: { children: ReactNode }) {
                 <Link href="/marketplace">
                   <ShoppingCart />
                   <span>Marketplace</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Services">
+                <Link href="/services">
+                  <Wrench />
+                  <span>Services</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

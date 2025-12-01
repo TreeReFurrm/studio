@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, ScanLine, ShoppingCart, ArrowRight } from "lucide-react";
+import { PlusCircle, ScanLine, ShoppingCart, ArrowRight, Wrench } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
         <p className="text-muted-foreground">Your AI assistant for de-cluttering and ethical selling.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
         <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -45,8 +45,8 @@ export default function Home() {
             </Button>
           </CardContent>
         </Card>
-
-        <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow">
+        
+        <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ShoppingCart className="text-primary" />
@@ -59,6 +59,23 @@ export default function Home() {
           <CardContent className="flex-grow flex items-end">
             <Button asChild className="w-full">
               <Link href="/marketplace">Go to Marketplace <ArrowRight className="ml-2" /></Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Wrench className="text-primary" />
+              <span>Ambassador Services</span>
+            </CardTitle>
+            <CardDescription>
+             Need a hand with a big project? Request a clean-out or organization service.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-grow flex items-end">
+            <Button asChild className="w-full">
+              <Link href="/services">Request a Service <ArrowRight className="ml-2" /></Link>
             </Button>
           </CardContent>
         </Card>
