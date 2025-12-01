@@ -56,7 +56,7 @@ export default function DonationPage() {
       <header className="text-center space-y-3">
         <Heart className="w-12 h-12 text-primary mx-auto" />
         <h1 className="text-4xl font-extrabold tracking-tight">
-          Support ValuScan's Big Mission
+          Support ReFurrm Scan's Big Mission
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Every contribution, monetary or physical, powers our rescue network and ethical resale initiatives.
@@ -73,7 +73,7 @@ export default function DonationPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
             <p>
-                ValuScan's core goal is to prevent valuable, historical, or sentimental items from being lost or destroyed through estate liquidations and storage auctions. We focus on **ethical preservation** and **community support**.
+                ReFurrm Scan's core goal is to prevent valuable, historical, or sentimental items from being lost or destroyed through estate liquidations and storage auctions. We focus on **ethical preservation** and **community support**.
             </p>
             <p className="font-semibold text-balance">
                 <span className="text-destructive">Legacy User Support:</span> Funds are primarily used for emergency interventions, such as paying a Legacy User's storage rent to prevent the contents from going to auction. This aid is **application-based**, reserved for individuals demonstrating genuine need and ethical alignment, and is not simply a debt payment service.

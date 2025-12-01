@@ -5,7 +5,7 @@ import { MainLayout } from '@/components/layout/main-layout';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'ValuScan',
+  title: 'ReFurrm Scan',
   description: 'The AI De-Clutter & Ethical Marketplace',
 };
 

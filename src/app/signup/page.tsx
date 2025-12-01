@@ -84,7 +84,7 @@ export default function SignupPage() {
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Create an Account</CardTitle>
-          <CardDescription>Join the ValuScan community</CardDescription>
+          <CardDescription>Join the ReFurrm Scan community</CardDescription>
         </CardHeader>
         <CardContent>
           <FormProvider {...form}>

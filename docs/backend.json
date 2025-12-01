@@ -4,7 +4,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "User",
       "type": "object",
-      "description": "Represents a user of the ValuScan platform.",
+      "description": "Represents a user of the ReFurrm Scan platform.",
       "properties": {
         "id": {
           "type": "string",
@@ -66,7 +66,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Item",
       "type": "object",
-      "description": "Represents an item listed on the ValuScan marketplace.",
+      "description": "Represents an item listed on the ReFurrm Scan marketplace.",
       "properties": {
         "id": {
           "type": "string",
@@ -131,7 +131,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Sale",
       "type": "object",
-      "description": "Represents a sale of an item on the ValuScan marketplace.",
+      "description": "Represents a sale of an item on the ReFurrm Scan marketplace.",
       "properties": {
         "id": {
           "type": "string",

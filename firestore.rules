@@ -1,11 +1,11 @@
 rules_version = '2';
 
 /**
- * @name ValuScan Marketplace Security Rules
+ * @name ReFurrm Scan Marketplace Security Rules
  * @author Your Name
  *
  * @description
- * This ruleset enforces a security model for the ValuScan marketplace application.
+ * This ruleset enforces a security model for the ReFurrm Scan marketplace application.
  * It is designed for rapid prototyping, focusing on strict authorization while
  * maintaining flexibility in data schemas.
  *

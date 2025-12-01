@@ -9,7 +9,7 @@ export default function ProfileSetupPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold tracking-tight">Calibrate Your AI</CardTitle>
           <CardDescription className="text-lg text-muted-foreground">
-            Answer a few questions to personalize your ValuScan experience.
+            Answer a few questions to personalize your ReFurrm Scan experience.
           </CardDescription>
         </CardHeader>
       </Card>

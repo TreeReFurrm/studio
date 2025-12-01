@@ -64,7 +64,7 @@ export default function LoginPage() {
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Welcome Back</CardTitle>
-          <CardDescription>Sign in to your ValuScan account</CardDescription>
+          <CardDescription>Sign in to your ReFurrm Scan account</CardDescription>
         </CardHeader>
         <CardContent>
           <FormProvider {...form}>
