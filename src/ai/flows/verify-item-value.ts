@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -98,7 +99,7 @@ Calculation Steps:
 4. Calculate 'base_rsp' = avg_resale * condition_multiplier.
 5. Calculate 'min_resale_value' = base_rsp * 0.85.
 6. Calculate 'max_resale_value' = base_rsp * 1.15 * source_multiplier.
-7. Ensure min_resale_value is not greater than max_resale_value.
+7. Ensure min_resale_value is not greater than max_resale_value. If it is, set min_resale_value = max_resale_value * 0.9.
 8. Create a 'justification' string explaining how the base price was adjusted by the multipliers.
 
 Analyze the following photo and user inputs:
