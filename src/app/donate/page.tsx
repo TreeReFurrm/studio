@@ -9,10 +9,12 @@ import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
 
 export default function DonationPage() {
   const router = useRouter();
   const [amount, setAmount] = useState(50); // Default donation amount
+  const { toast } = useToast();
 
   // Define the impact tiers for transparency
   const impactTiers = [
@@ -25,12 +27,18 @@ export default function DonationPage() {
   // Handler for Monetary Donation (Placeholder for Stripe)
   const handleMonetaryDonate = () => {
     // **TODO: INTEGRATE STRIPE CHECKOUT HERE**
+    // This function must call an API route to securely create a Stripe Checkout Session
     console.log(`Initiating donation for $${amount}. (Stripe integration needed)`);
     
-    // In a production app, you would make an API call to create a Stripe Checkout Session
-    // Example: fetch('/api/stripe/create-session', { method: 'POST', body: JSON.stringify({ amount }) })
+    toast({
+        title: 'Thank You!',
+        description: `Your $${amount} donation is greatly appreciated. We are redirecting you to checkout...`
+    })
     
-    alert(`Thank you for your $${amount} donation! (Stripe Checkout Placeholder)`);
+    // In a real implementation:
+    // fetch('/api/stripe/create-checkout', { method: 'POST', body: JSON.stringify({ amount: amount * 100 }) })
+    //   .then(res => res.json())
+    //   .then(data => router.push(data.url)); 
   };
 
   // Handler for Item Donation - Reroutes to the item scanning/listing flow
@@ -101,7 +109,7 @@ export default function DonationPage() {
                     className="flex flex-col h-auto py-4 text-center justify-center items-center"
                   >
                     <span className="text-lg font-bold">{tier.label}</span>
-                    <span className="text-xs text-muted-foreground/90 mt-1 block">
+                    <span className="text-xs text-muted-foreground/90 mt-1 block max-w-[90px] mx-auto text-balance">
                         {tier.description.split('(')[0].trim()}
                     </span>
                   </Button>
@@ -134,7 +142,7 @@ export default function DonationPage() {
 
         {/* === COLUMN 2: PHYSICAL ITEM DONATION & AMBASSADOR CALL === */}
         <div className="space-y-6">
-            <Card className="h-full">
+            <Card className="h-full flex flex-col">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <Gift className="w-6 h-6" />
@@ -144,20 +152,20 @@ export default function DonationPage() {
                   We assess your item's resale cost to ensure we can make a profit for the mission fund.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                  <ul className="space-y-2 text-sm text-muted-foreground mb-4">
-                    <li>✓ Item value determined by AI.</li>
-                    <li>✓ **Shipping/Pickup:** Arranged based on resale cost.</li>
-                    <li>✓ Local pickup coordinated by an **Ambassador** (where available).</li>
-                    <li>✓ 100% of proceeds fund the Mission.</li>
+              <CardContent className="flex-grow flex flex-col justify-between">
+                  <ul className="space-y-2 text-sm text-muted-foreground mb-4 list-disc pl-5">
+                    <li>Item value determined by AI.</li>
+                    <li>**Shipping/Pickup:** Arranged based on resale cost.</li>
+                    <li>Local pickup coordinated by an **Ambassador** (where available).</li>
+                    <li>100% of proceeds fund the Mission.</li>
                   </ul>
-                  <Button onClick={handleItemDonate} className="w-full">
+                  <Button onClick={handleItemDonate} className="w-full mt-auto">
                     Start Item Donation <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
               </CardContent>
             </Card>
 
-            <Card className="h-full bg-primary text-primary-foreground">
+            <Card className="h-full bg-primary text-primary-foreground flex flex-col">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <UserPlus className="w-6 h-6" />
@@ -167,7 +175,7 @@ export default function DonationPage() {
                   Ready to coordinate local pickups and events? Join our leadership team.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow flex items-end">
                 <Button 
                     variant="secondary" 
                     onClick={handleAmbassadorInterest} 
