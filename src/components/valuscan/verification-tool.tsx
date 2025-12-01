@@ -110,7 +110,7 @@ export function VerificationTool() {
     const authInfo = getAuthenticityInfo(result.authenticity.verdict);
     return (
       <div className="flex flex-col items-center gap-6 text-center">
-         <Card className="w-full">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle className="text-2xl">{result.itemName}</CardTitle>
           </CardHeader>
@@ -178,105 +178,107 @@ export function VerificationTool() {
   }
 
   return (
-    <Card>
-      <CardContent className="p-6">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center gap-6">
-              <FormField
-                control={form.control}
-                name="photoDataUri"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <ImageUploader
-                        onImageUpload={(uri) => field.onChange(uri || '')}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-center" />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="condition"
-                render={({ field }) => (
-                  <FormItem className="w-full max-w-md">
-                    <FormLabel>Item Condition</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+    <div>
+      <Card>
+        <CardContent className="p-6">
+            <FormProvider {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center gap-6">
+                <FormField
+                  control={form.control}
+                  name="photoDataUri"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select the item's condition" />
-                        </SelectTrigger>
+                        <ImageUploader
+                          onImageUpload={(uri) => field.onChange(uri || '')}
+                          disabled={isLoading}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {conditions.map((c) => (
-                            <SelectItem key={c} value={c}>{c}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage className="text-center" />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="condition"
+                  render={({ field }) => (
+                    <FormItem className="w-full max-w-md">
+                      <FormLabel>Item Condition</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select the item's condition" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {conditions.map((c) => (
+                              <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="source"
-                render={({ field }) => (
-                  <FormItem className="w-full max-w-md">
-                    <FormLabel>Valuation Context</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                <FormField
+                  control={form.control}
+                  name="source"
+                  render={({ field }) => (
+                    <FormItem className="w-full max-w-md">
+                      <FormLabel>Valuation Context</FormLabel>
+                       <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select the valuation source/context" />
+                          </Trigger>
+                        </FormControl>
+                        <SelectContent>
+                           {sources.map((s) => (
+                              <SelectItem key={s} value={s}>{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="askingPrice"
+                  render={({ field }) => (
+                    <FormItem className="w-full max-w-md">
+                      <FormLabel>Asking Price (Optional)</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select the valuation source/context" />
-                        </Trigger>
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input type="number" step="0.01" placeholder="Enter price to check profit" className="pl-8" {...field} disabled={isLoading} />
+                        </div>
                       </FormControl>
-                      <SelectContent>
-                         {sources.map((s) => (
-                            <SelectItem key={s} value={s}>{s}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="askingPrice"
-                render={({ field }) => (
-                  <FormItem className="w-full max-w-md">
-                    <FormLabel>Asking Price (Optional)</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input type="number" step="0.01" placeholder="Enter price to check profit" className="pl-8" {...field} disabled={isLoading} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button type="submit" disabled={isLoading || !photoDataUri} className="w-full max-w-xs">
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Verifying...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Verify Value
-                  </>
-                )}
-              </Button>
-            </form>
-          </FormProvider>
-      </CardContent>
-    </Card>
+                <Button type="submit" disabled={isLoading || !photoDataUri} className="w-full max-w-xs">
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Verify Value
+                    </>
+                  )}
+                </Button>
+              </form>
+            </FormProvider>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
