@@ -306,7 +306,7 @@ export function ListingForm() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Heart className="size-5" /> Ethical Contribution</CardTitle>
             <CardDescription>Optionally, contribute a portion of your sale to fund industry change.</CardDescription>
-          </Header>
+          </CardHeader>
           <CardContent className="space-y-6">
              <FormField
                 control={form.control}
@@ -356,5 +356,3 @@ export function ListingForm() {
     </Form>
   );
 }
-
-    
