@@ -319,7 +319,7 @@ export function ListingForm() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Heart className="size-5" /> Ethical Contribution</CardTitle>
             <CardDescription>Optionally, contribute a portion of your sale to fund industry change.</CardDescription>
-          </Header>
+          </CardHeader>
           <CardContent className="space-y-6">
              <FormField
                 control={form.control}
@@ -342,7 +342,8 @@ export function ListingForm() {
                   name="contributionPercentage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contribution Percentage</FormLabel>                       <FormControl>
+                      <FormLabel>Contribution Percentage</FormLabel>
+                      <FormControl>
                         <div className="relative">
                           <Input type="number" placeholder="10" {...field} />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground">%</span>
