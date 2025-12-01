@@ -146,21 +146,21 @@ export default function DonationPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <Gift className="w-6 h-6" />
-                  Donate a Physical Item
+                  Contribute an Item for Ethical Resale
                 </CardTitle>
                 <CardDescription>
-                  We assess your item's resale cost to ensure we can make a profit for the mission fund.
+                  Use our AI tools to submit your item. We handle the assessment and ethical resale to maximize the contribution to the Big Mission Fund.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
                   <ul className="space-y-2 text-sm text-muted-foreground mb-4 list-disc pl-5">
-                    <li>Item value determined by AI.</li>
-                    <li>**Shipping/Pickup:** Arranged based on resale cost.</li>
-                    <li>Local pickup coordinated by an **Ambassador** (where available).</li>
-                    <li>100% of proceeds fund the Mission.</li>
+                    <li>**AI Value Assessment:** We use AI to determine the item's potential resale value.</li>
+                    <li>**Resale Profitability Check:** We proceed only if the item's value guarantees a profit for the mission after all costs (shipping, fees).</li>
+                    <li>**Fulfillment Coordination:** Local pickup is arranged by a verified **Ambassador** (where available).</li>
+                    <li>**100% Mission Funding:** All net proceeds from the sale are directed to the Big Mission Fund.</li>
                   </ul>
                   <Button onClick={handleItemDonate} className="w-full mt-auto">
-                    Start Item Donation <ArrowRight className="w-4 h-4 ml-2" />
+                    Submit Item for Assessment <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
               </CardContent>
             </Card>
