@@ -159,56 +159,56 @@ export function ListingForm() {
       </Card>
     );
   }
+  
+  const renderFormContent = () => {
+    if (!scanResult.isConsignmentViable) {
+      return (
+          <Card>
+              <CardContent className="p-6 flex flex-col items-center gap-6 text-center">
+                   <Alert variant="destructive">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertTitle>Consignment Rejected</AlertTitle>
+                      <AlertDescription>
+                          {scanResult.appraisalNote}
+                          {scanResult.priceType === 'RETAIL' && (
+                              <p className="mt-2 font-bold">Estimated Retail Value: ${scanResult.maxPrice.toFixed(2)}</p>
+                          )}
+                      </AlertDescription>
+                  </Alert>
+                   <p className="text-sm text-muted-foreground">
+                      While this item isn't eligible for consignment, you can still contribute by donating it for ethical recycling or local aid.
+                  </p>
+                  <div className="flex gap-4">
+                      <Button onClick={handleReset} variant="outline">List a Different Item</Button>
+                      <Button onClick={() => setListingAction('DONATE')}>
+                          <Gift className="mr-2 h-4 w-4" />
+                          Donate This Item
+                      </Button>
+                  </div>
+              </CardContent>
+          </Card>
+      );
+    }
+  
+    if (listingAction) {
+      const { title, price } = form.getValues();
+      return (
+          <Card>
+              <CardHeader className="text-center">
+                  <CardTitle>Confirm Your Action</CardTitle>
+                  <CardDescription>
+                      You are about to start a '{listingAction}' request for '{title}' {listingAction === 'SELL' ? `with a listing price of $${price.toFixed(2)}` : ''}.
+                  </CardDescription>
+              </CardHeader>
+              <CardContent className="flex justify-center gap-4">
+                  <Button variant="outline" onClick={() => setListingAction(null)}>Cancel</Button>
+                  <Button onClick={confirmAction}>Confirm & Find Ambassador</Button>
+              </CardContent>
+          </Card>
+      )
+    }
 
-  if (!scanResult.isConsignmentViable) {
     return (
-        <Card>
-            <CardContent className="p-6 flex flex-col items-center gap-6 text-center">
-                 <Alert variant="destructive">
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertTitle>Consignment Rejected</AlertTitle>
-                    <AlertDescription>
-                        {scanResult.appraisalNote}
-                        {scanResult.priceType === 'RETAIL' && (
-                            <p className="mt-2 font-bold">Estimated Retail Value: ${scanResult.maxPrice.toFixed(2)}</p>
-                        )}
-                    </AlertDescription>
-                </Alert>
-                 <p className="text-sm text-muted-foreground">
-                    While this item isn't eligible for consignment, you can still contribute by donating it for ethical recycling or local aid.
-                </p>
-                <div className="flex gap-4">
-                    <Button onClick={handleReset} variant="outline">List a Different Item</Button>
-                    <Button onClick={() => setListingAction('DONATE')}>
-                        <Gift className="mr-2 h-4 w-4" />
-                        Donate This Item
-                    </Button>
-                </div>
-            </CardContent>
-        </Card>
-    );
-  }
-
-  if (listingAction) {
-    const { title, price } = form.getValues();
-    return (
-        <Card>
-            <CardHeader className="text-center">
-                <CardTitle>Confirm Your Action</CardTitle>
-                <CardDescription>
-                    You are about to start a '{listingAction}' request for '{title}' {listingAction === 'SELL' ? `with a listing price of $${price.toFixed(2)}` : ''}.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-center gap-4">
-                <Button variant="outline" onClick={() => setListingAction(null)}>Cancel</Button>
-                <Button onClick={confirmAction}>Confirm & Find Ambassador</Button>
-            </CardContent>
-        </Card>
-    )
-  }
-
-  return (
-    <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card>
           <CardHeader>
@@ -366,6 +366,13 @@ export function ListingForm() {
             </Button>
         </div>
       </form>
+    );
+  }
+
+  return (
+    <FormProvider {...form}>
+      {renderFormContent()}
     </FormProvider>
   );
 }
+

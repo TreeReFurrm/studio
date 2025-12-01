@@ -13,6 +13,7 @@ import { Loader2, Sparkles, DollarSign, TrendingUp, AlertCircle, BadgeCheck, Bar
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { z } from 'zod';
 
 const upcSchema = z.object({
   upcCode: z.string().min(10, 'UPC must be at least 10 digits.').max(14, 'UPC cannot be more than 14 digits.'),
