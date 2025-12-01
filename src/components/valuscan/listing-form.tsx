@@ -72,7 +72,7 @@ export function ListingForm() {
         // Gatekeeper stops the flow here but still needs to set form values for donation
         form.setValue('title', output.suggestedTitle);
         form.setValue('description', output.suggestedDescription);
-        form.setValue('price', 0); // Price is 0 for donation
+        form.setValue('price', output.maxPrice); // Use retail price for donation context
         form.setValue('tags', [output.categoryTag.replace(/_/g, ' ')]);
         return; 
       }
