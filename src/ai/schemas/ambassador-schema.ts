@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -12,7 +13,7 @@ import { z } from 'zod';
 
 // Schema for a single ambassador
 export const AmbassadorSchema = z.object({
-  id: z.string().uuid().describe('Unique identifier for the Ambassador.'),
+  id: z.string().describe('Unique identifier for the Ambassador.'),
   name: z.string().describe('Full name of the Ambassador.'),
   area: z.string().describe('Geographical service area.'),
   specialty: z.string().describe('Area of expertise (e.g., Mid-Century Furniture, Electronics).'),

@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -9,10 +10,11 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import {
   AmbassadorListSchema,
   type AmbassadorListOutput,
+  type Ambassador,
 } from '@/ai/schemas/ambassador-schema';
 import { ListingDetailsSchema } from '@/ai/schemas/listing-details';
 
@@ -21,43 +23,65 @@ export const AmbassadorFlowInputSchema = ListingDetailsSchema.extend({
   action: z
     .enum(['SELL', 'DONATE'])
     .describe('The user’s chosen action: SELL (Consignment) or DONATE.'),
+  zipCode: z.string().describe('The user\'s ZIP code for location-based search.'),
+  service: z.enum(['pickup', 'cleanout', 'organize', 'downsize']).describe('The specific service required.'),
 });
 export type AmbassadorFlowInput = z.infer<typeof AmbassadorFlowInputSchema>;
 
 
+const VALID_SERVICES = {
+    "pickup": "Item Pickup/Shipping Drop-off",
+    "cleanout": "Full Home/Storage Unit Clean-out Services",
+    "organize": "Organizational Services (e.g., Garage Facelift)",
+    "downsize": "Downsizing Consultation/Assistance",
+};
+
+const AMBASSADOR_NETWORK = [
+    {
+        id: "AMB001",
+        name: "Alex Johnson",
+        location_zip: "90210",
+        location_city: "Beverly Hills",
+        services: ["pickup", "organize"],
+        rating: 4.8,
+        is_active: true,
+    },
+    {
+        id: "AMB002",
+        name: "Maria Rodriguez",
+        location_zip: "10001",
+        location_city: "New York",
+        services: ["pickup", "cleanout", "downsize"],
+        rating: 4.9,
+        is_active: true,
+    },
+    {
+        id: "AMB003",
+        name: "Thomas Lee",
+        location_zip: "90210",
+        location_city: "Beverly Hills",
+        services: ["pickup"],
+        rating: 4.5,
+        is_active: false,
+    },
+];
+
+
 /**
- * In a real app, this would query a database/CRM to find ambassadors
- * based on location and specialty.
+ * In a real app, this would query a database/CRM.
+ * This function finds active ambassadors in a given ZIP code who offer a required service.
  */
-async function getRawAmbassadorData(area: string, itemType: string) {
-  console.log(`Querying ambassadors for area: ${area} and item: ${itemType}`);
-  // Mock list of potential ambassadors
-  return [
-    {
-      id: 'a1b2c3d4-e5f6-7890-1234-567890abcde0',
-      name: 'Maria Rodriguez',
-      area: 'Austin, TX',
-      specialty: 'Mid-Century Furniture',
-      rating: 4.9,
-      expectedPickupTime: '2 days',
-    },
-    {
-      id: 'f1g2h3i4-j5k6-7890-1234-567890abcde1',
-      name: 'David Chen',
-      area: 'Central Texas',
-      specialty: 'Electronics and Gadgets',
-      rating: 4.5,
-      expectedPickupTime: '4 days',
-    },
-    {
-      id: 'k1l2m3n4-o5p6-7890-1234-567890abcde2',
-      name: 'Sarah O’Connell',
-      area: 'Round Rock',
-      specialty: 'High-Value Clothing & Bags',
-      rating: 5.0,
-      expectedPickupTime: '1-2 weeks',
-    },
-  ];
+async function findLocalAmbassadors(zipCode: string, requiredService: keyof typeof VALID_SERVICES): Promise<any[]> {
+    console.log(`--- 📍 Searching for '${VALID_SERVICES[requiredService]}' Ambassadors in ZIP ${zipCode} ---`);
+
+    const localAmbassadors = AMBASSADOR_NETWORK.filter(ambassador => {
+        const isLocal = ambassador.location_zip === zipCode;
+        const offersService = ambassador.services.includes(requiredService);
+        const isActive = ambassador.is_active;
+        return isLocal && offersService && isActive;
+    });
+
+    return localAmbassadors;
 }
 
 
@@ -70,7 +94,7 @@ export async function selectAmbassador(
 
 const selectAmbassadorPrompt = ai.definePrompt({
     name: 'selectAmbassadorPrompt',
-    input: { schema: AmbassadorFlowInputSchema },
+    input: { schema: AmbassadorFlowInputSchema.extend({ rawAmbassadors: z.string() }) },
     output: { schema: AmbassadorListSchema },
     prompt: `
       The user has decided to proceed with a {{action}} action for the following item:
@@ -98,12 +122,12 @@ const selectAmbassadorFlow = ai.defineFlow(
     outputSchema: AmbassadorListSchema,
   },
   async (input) => {
-    // 1. Get mock data based on item details (item name/category from the title)
-    // We'll use a simplified area/item type for the mock data function
-    const itemType = input.title.split(' ')[0] || 'general';
-    const area = 'Austin, TX'; // Assuming we have user location data elsewhere
+    // 1. Get filtered ambassador data based on location and service
+    const rawAmbassadors = await findLocalAmbassadors(input.zipCode, input.service);
 
-    const rawAmbassadors = await getRawAmbassadorData(area, itemType);
+    if (rawAmbassadors.length === 0) {
+        return { ambassadors: [] };
+    }
 
     // 2. Use the LLM to process and format the raw data into the required structured output.
     const {output} = await selectAmbassadorPrompt({
