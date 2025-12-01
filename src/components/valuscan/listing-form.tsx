@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { ImageUploader } from './image-uploader';
@@ -14,7 +14,7 @@ import { Textarea } from '../ui/textarea';
 import { Switch } from '../ui/switch';
 import { scanItem, type ScanItemOutput } from '@/ai/flows/scan-item';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, DollarSign, Heart, Info, AlertTriangle } from 'lucide-react';
+import { Loader2, Sparkles, DollarSign, Heart, Info, AlertTriangle, Gift } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
@@ -69,7 +69,11 @@ export function ListingForm() {
       setScanResult(output);
 
       if (!output.isConsignmentViable) {
-        // Gatekeeper stops the flow here
+        // Gatekeeper stops the flow here but still needs to set form values for donation
+        form.setValue('title', output.suggestedTitle);
+        form.setValue('description', output.suggestedDescription);
+        form.setValue('price', 0); // Price is 0 for donation
+        form.setValue('tags', [output.categoryTag.replace(/_/g, ' ')]);
         return; 
       }
       
@@ -159,18 +163,27 @@ export function ListingForm() {
   if (!scanResult.isConsignmentViable) {
     return (
         <Card>
-            <CardContent className="p-6 flex flex-col items-center gap-6">
-                 <Alert variant="destructive" className="text-center">
+            <CardContent className="p-6 flex flex-col items-center gap-6 text-center">
+                 <Alert variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
-                    <AlertTitle>Listing Rejected</AlertTitle>
+                    <AlertTitle>Consignment Rejected</AlertTitle>
                     <AlertDescription>
                         {scanResult.appraisalNote}
                         {scanResult.priceType === 'RETAIL' && (
-                            <p className="mt-2 font-bold">Estimated Retail Value for reference: ${scanResult.maxPrice.toFixed(2)}</p>
+                            <p className="mt-2 font-bold">Estimated Retail Value: ${scanResult.maxPrice.toFixed(2)}</p>
                         )}
                     </AlertDescription>
                 </Alert>
-                <Button onClick={handleReset} variant="outline">Try Another Item</Button>
+                 <p className="text-sm text-muted-foreground">
+                    While this item isn't eligible for consignment, you can still contribute by donating it for ethical recycling or local aid.
+                </p>
+                <div className="flex gap-4">
+                    <Button onClick={handleReset} variant="outline">List a Different Item</Button>
+                    <Button onClick={() => setListingAction('DONATE')}>
+                        <Gift className="mr-2 h-4 w-4" />
+                        Donate This Item
+                    </Button>
+                </div>
             </CardContent>
         </Card>
     );
@@ -183,7 +196,7 @@ export function ListingForm() {
             <CardHeader className="text-center">
                 <CardTitle>Confirm Your Action</CardTitle>
                 <CardDescription>
-                    You are about to start a '{listingAction}' request for '{title}' with a listing price of ${price.toFixed(2)}.
+                    You are about to start a '{listingAction}' request for '{title}' {listingAction === 'SELL' ? `with a listing price of $${price.toFixed(2)}` : ''}.
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center gap-4">
@@ -306,7 +319,7 @@ export function ListingForm() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Heart className="size-5" /> Ethical Contribution</CardTitle>
             <CardDescription>Optionally, contribute a portion of your sale to fund industry change.</CardDescription>
-          </CardHeader>
+          </Header>
           <CardContent className="space-y-6">
              <FormField
                 control={form.control}
