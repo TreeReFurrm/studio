@@ -12,9 +12,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Input } from '../ui/input';
 import { verifyItemValue, type VerifyItemValueOutput } from '@/ai/flows/verify-item-value';
-import { Loader2, Sparkles, DollarSign, TrendingUp, AlertCircle, BadgeCheck, ShoppingCart } from 'lucide-react';
+import { Loader2, Sparkles, DollarSign, TrendingUp, AlertCircle, BadgeCheck, ShoppingCart, ShieldCheck, ShieldAlert, FileQuestion } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
+import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
 const conditions = [
     "New (Sealed)",
@@ -87,10 +89,92 @@ export function VerificationTool() {
     return <AlertCircle className="text-destructive" />;
   }
 
+  const getAuthenticityInfo = (verdict: VerifyItemValueOutput['authenticity']['verdict']) => {
+    switch (verdict) {
+      case 'AUTHENTIC':
+        return { icon: ShieldCheck, color: 'text-green-500', bgColor: 'bg-green-500/10', text: 'Likely Authentic' };
+      case 'POSSIBLE_FAKE':
+        return { icon: ShieldAlert, color: 'text-destructive', bgColor: 'bg-destructive/10', text: 'Potential Fake' };
+      default:
+        return { icon: FileQuestion, color: 'text-muted-foreground', bgColor: 'bg-muted/50', text: 'Not Applicable' };
+    }
+  };
+
+
+  if (result) {
+    const authInfo = getAuthenticityInfo(result.authenticity.verdict);
+    return (
+      <div className="flex flex-col items-center gap-6 text-center">
+         <Card className="w-full">
+          <CardHeader>
+            <CardTitle className="text-2xl">{result.itemName}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+             <div className="grid grid-cols-2 gap-4">
+                <Card className="bg-secondary text-center p-4">
+                    <CardDescription>Resale Value</CardDescription>
+                    <p className="text-2xl font-bold text-primary">
+                        ${result.minResaleValue.toFixed(2)} - ${result.maxResaleValue.toFixed(2)}
+                    </p>
+                </Card>
+                <Card className={cn("p-4 text-center", authInfo.bgColor)}>
+                    <CardDescription>Authenticity</CardDescription>
+                    <div className="flex items-center justify-center gap-2">
+                        <authInfo.icon className={cn("size-6", authInfo.color)} />
+                        <p className={cn("text-2xl font-bold", authInfo.color)}>
+                            {authInfo.text}
+                        </p>
+                    </div>
+                </Card>
+            </div>
+             <p className="text-sm text-muted-foreground pt-2">{result.justification}</p>
+          </CardContent>
+        </Card>
+        
+        {result.authenticity.verdict === 'POSSIBLE_FAKE' && (
+            <Alert variant="destructive" className="w-full text-left">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Authenticity Warning</AlertTitle>
+                <AlertDescription>
+                    Our AI found the following potential issues:
+                    <ul className="list-disc pl-5 mt-2">
+                        {result.authenticity.reasons.map((reason, i) => <li key={i}>{reason}</li>)}
+                    </ul>
+                </AlertDescription>
+            </Alert>
+        )}
+
+        {result.profitAnalysis && (
+             <Card className="w-full">
+                <CardHeader className="text-center">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                        {getVerdictIcon(result.profitAnalysis.verdict)}
+                    </div>
+                    <CardTitle className="text-2xl">{result.profitAnalysis.verdict}</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="text-left flex items-center"><ShoppingCart className="inline-block mr-2 size-4" />Asking Price</div>
+                    <div className="text-right font-medium">${form.getValues('askingPrice')?.toFixed(2)}</div>
+                    
+                    <div className="text-left flex items-center"><DollarSign className="inline-block mr-2 size-4" />Potential Profit</div>
+                    <div className="text-right font-medium text-green-600">${result.profitAnalysis.potentialGrossProfit.toFixed(2)}</div>
+
+                    <div className="text-left flex items-center"><TrendingUp className="inline-block mr-2 size-4" />Potential ROI</div>
+                    <div className="text-right font-medium text-green-600">{result.profitAnalysis.potentialRoiPercent.toFixed(1)}%</div>
+                </CardContent>
+             </Card>
+        )}
+
+        <Button onClick={handleReset} variant="outline" className="w-full max-w-xs">
+          Verify Another Item
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <Card>
       <CardContent className="p-6">
-        {!result ? (
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-center gap-6">
               <FormField
@@ -187,48 +271,9 @@ export function VerificationTool() {
               </Button>
             </form>
           </FormProvider>
-        ) : (
-          <div className="flex flex-col items-center gap-6 text-center">
-            <Card className="w-full bg-secondary">
-              <CardHeader>
-                <CardDescription>Realistic Resale Value Range</CardDescription>
-                <CardTitle className="text-4xl font-bold text-primary">
-                  ${result.minResaleValue.toFixed(2)} - ${result.maxResaleValue.toFixed(2)}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{result.justification}</p>
-              </CardContent>
-            </Card>
-
-            {result.profitAnalysis && (
-                 <Card className="w-full">
-                    <CardHeader className="text-center">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                            {getVerdictIcon(result.profitAnalysis.verdict)}
-                        </div>
-                        <CardTitle className="text-2xl">{result.profitAnalysis.verdict}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="text-left"><ShoppingCart className="inline-block mr-2" />Asking Price</div>
-                        <div className="text-right font-medium">${result.profitAnalysis.potentialGrossProfit > 0 ? form.getValues('askingPrice')?.toFixed(2) : result.profitAnalysis.askingPrice?.toFixed(2) }</div>
-                        
-                        <div className="text-left"><DollarSign className="inline-block mr-2" />Potential Profit</div>
-                        <div className="text-right font-medium text-green-600">${result.profitAnalysis.potentialGrossProfit.toFixed(2)}</div>
-
-                        <div className="text-left"><TrendingUp className="inline-block mr-2" />Potential ROI</div>
-                        <div className="text-right font-medium text-green-600">{result.profitAnalysis.potentialRoiPercent.toFixed(1)}%</div>
-
-                    </CardContent>
-                 </Card>
-            )}
-
-            <Button onClick={handleReset} variant="outline" className="w-full max-w-xs">
-              Verify Another Item
-            </Button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
 }
+
+    

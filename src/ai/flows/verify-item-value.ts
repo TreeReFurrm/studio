@@ -6,7 +6,7 @@
  *
  * The flow takes an image of an item, its condition, the source context, and an optional asking price.
  * It returns its estimated "min" and "max" resale value, and if an asking price is provided,
- * it also calculates the potential profit opportunity.
+ * it also calculates the potential profit opportunity. It now also includes an authenticity check.
  *
  * @exported verifyItemValue - An async function that initiates the item value verification flow.
  * @exported VerifyItemValueInput - The input type for the verifyItemValue function.
@@ -15,6 +15,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { scoutFakes } from './scout-fakes';
 
 const VerifyItemValueInputSchema = z.object({
   photoDataUri: z
@@ -45,7 +46,14 @@ const ProfitAnalysisSchema = z.object({
     verdict: z.string().describe("A short verdict on whether it's a good deal.")
 });
 
+const AuthenticitySchema = z.object({
+    verdict: z.enum(["AUTHENTIC", "POSSIBLE_FAKE", "NOT_APPLICABLE"]),
+    confidenceScore: z.number(),
+    reasons: z.array(z.string()),
+});
+
 const VerifyItemValueOutputSchema = z.object({
+  itemName: z.string().describe("The name of the item identified in the photo."),
   minResaleValue: z
     .number()
     .describe(
@@ -61,7 +69,8 @@ const VerifyItemValueOutputSchema = z.object({
     .describe(
       'A brief justification for the estimated market value, including the multipliers used.'
     ),
-  profitAnalysis: ProfitAnalysisSchema.optional().describe("An analysis of the profit opportunity if an asking price is provided.")
+  profitAnalysis: ProfitAnalysisSchema.optional().describe("An analysis of the profit opportunity if an asking price is provided."),
+  authenticity: AuthenticitySchema.describe("The result of the authenticity check."),
 });
 export type VerifyItemValueOutput = z.infer<typeof VerifyItemValueOutputSchema>;
 
@@ -73,8 +82,19 @@ export async function verifyItemValue(
 
 const verifyItemValuePrompt = ai.definePrompt({
   name: 'verifyItemValuePrompt',
-  input: {schema: VerifyItemValueInputSchema},
-  output: {schema: VerifyItemValueOutputSchema},
+  input: {schema: z.object({
+    photoDataUri: z.string(),
+    condition: z.string(),
+    source: z.string(),
+    askingPrice: z.number().optional(),
+  })},
+  output: {schema: z.object({
+    itemName: z.string(),
+    minResaleValue: z.number(),
+    maxResaleValue: z.number(),
+    justification: z.string(),
+    profitAnalysis: ProfitAnalysisSchema.optional(),
+  })},
   prompt: `You are an expert appraiser, skilled at determining the true market value of items and identifying profit opportunities.
 
 First, identify the item in the photo.
@@ -88,6 +108,8 @@ CORE_MARKET_DATA = {
     "Unopened Lego Set (Current)": { avg_resale: 80.00 },
     "Proenza Schouler PS1 Tiny Bag": { avg_resale: 450.00 },
     "iPhone 14 Plus (Used)": { avg_resale: 341.00 },
+    "Hermes Birkin Bag": { avg_resale: 9000.00 },
+    "Rolex Submariner Watch": { avg_resale: 12000.00 },
 }
 
 CONDITION_MULTIPLIERS = {
@@ -137,7 +159,7 @@ Source: {{{source}}}
 Asking Price: {{{askingPrice}}}
 {{/if}}
 
-Respond with the min/max resale values, a justification, and the profit analysis if an asking price was provided.
+Respond with the identified item name, min/max resale values, a justification, and the profit analysis if an asking price was provided.
   `,
 });
 
@@ -148,7 +170,31 @@ const verifyItemValueFlow = ai.defineFlow(
     outputSchema: VerifyItemValueOutputSchema,
   },
   async input => {
-    const {output} = await verifyItemValuePrompt(input);
-    return output!;
+    // Run value verification and fake scouting in parallel
+    const [valueResult, authenticityResult] = await Promise.all([
+      verifyItemValuePrompt(input),
+      scoutFakes({
+        itemName: "Item from photo", // The LLM will identify the true name
+        checkLocation: input.source.includes("Market") ? "Auction Photo" : "In-Hand Scan"
+      })
+    ]);
+    
+    if (!valueResult.output) {
+      throw new Error("Value verification failed to produce an output.");
+    }
+
+    // The fake scouter needs the *actual* item name identified by the value promp.
+    // So we run it again with the correct name.
+    const finalAuthenticityResult = await scoutFakes({
+        itemName: valueResult.output.itemName,
+        checkLocation: input.source.includes("Market") ? "Auction Photo" : "In-Hand Scan"
+    });
+
+    return {
+        ...valueResult.output,
+        authenticity: finalAuthenticityResult,
+    };
   }
 );
+
+    
