@@ -21,6 +21,7 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { useRouter } from 'next/navigation';
 import { Progress } from '../ui/progress';
 import { ComparablesModal } from './comparables-modal';
+import { useUser } from '@/firebase';
 
 const conditions = [
     "New (Sealed)",
@@ -55,6 +56,7 @@ export function VerificationTool() {
   const [result, setResult] = useState<VerifyItemValueOutput | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const { user } = useUser();
 
   const form = useForm<VerificationFormData>({
     resolver: zodResolver(verificationSchema),
@@ -107,6 +109,11 @@ export function VerificationTool() {
     queryParams.set('price', result.maxResaleValue.toString());
     queryParams.set('description', `Based on a market valuation, this item is ready for listing. Condition: ${form.getValues('condition')}. Authenticity assessment: ${result.authenticity.verdict}.`);
     
+    // Pass enriched data for analytics
+    queryParams.set('suggestedPrice', result.maxResaleValue.toString());
+    queryParams.set('userTier', 'Community'); // Placeholder for actual user tier
+    queryParams.set('zipCode', '90210'); // Placeholder for actual user zip
+
     if (photoDataUri) {
       // For GET requests, data URIs can be very long. Let's pass a reference or handle differently in a real app.
       // For this prototype, we'll truncate if too long, or store it temporarily if we had a backend session.

@@ -67,6 +67,15 @@ export function InstantListingGenerator() {
             prefillData.image = imgUri;
         }
 
+        // You can also retrieve your new analytics-related params here
+        const suggestedPrice = searchParams.get('suggestedPrice');
+        const userTier = searchParams.get('userTier');
+        const zipCode = searchParams.get('zipCode');
+
+        // You would now pass these to your analytics tracking function
+        console.log('Received for analytics:', { suggestedPrice, userTier, zipCode });
+
+
         form.reset(prefillData);
         if(imgUri) {
              setAiResult({
