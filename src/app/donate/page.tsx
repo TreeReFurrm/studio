@@ -99,7 +99,7 @@ export default function DonationPage() {
                 Our Big Mission & Transparency
             </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
+        <CardContent className="space-y-2 text-sm">
             <p>
                 ReFurrm SmartScan prevents valuable items from being lost in estate liquidations and storage auctions through ethical preservation and community support.
             </p>
