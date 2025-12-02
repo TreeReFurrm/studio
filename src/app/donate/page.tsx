@@ -209,7 +209,7 @@ export default function DonationPage() {
                     className="w-full text-primary"
                     disabled={isProcessing}
                 >
-                  Apply to Lead
+                  Apply Now
                 </Button>
               </CardContent>
             </Card>
