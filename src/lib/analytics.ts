@@ -2,7 +2,7 @@
 'use client';
 
 import Ajv, { ValidateFunction } from 'ajv';
-import schema from '@/docs/analytics-schema.json';
+import schema from '../../docs/analytics-schema.json';
 import { User } from 'firebase/auth';
 
 // --- CONFIGURATION ---
@@ -46,16 +46,15 @@ const getAnonId = () => {
 
 
 // --- SCHEMA VALIDATION (AJV) ---
-const ajv = new Ajv({ allErrors: true });
-// Add all schemas to AJV instance to handle $ref
-Object.values(schema.components.schemas).forEach((s) => {
-    ajv.addSchema(s, (s as any).title || Math.random().toString());
-});
+const ajv = new Ajv({ allErrors: true, strict: false });
+ajv.addSchema(schema, 'analytics');
 
 const validators: Record<string, ValidateFunction> = {};
 Object.keys(schema.components.schemas).forEach((key) => {
-    const s = schema.components.schemas[key as SchemaName];
-    validators[key] = ajv.compile(s);
+    const validator = ajv.getSchema(`analytics#/components/schemas/${key}`);
+    if (validator) {
+        validators[key] = validator;
+    }
 });
 
 
