@@ -63,6 +63,7 @@ const AMBASSADOR_NETWORK = [
         services: ["pickup", "organize"],
         rating: 4.8,
         is_active: true,
+        specialty: "Electronics & Media"
     },
     {
         id: "AMB002",
@@ -72,6 +73,7 @@ const AMBASSADOR_NETWORK = [
         services: ["pickup", "cleanout", "downsize"],
         rating: 4.9,
         is_active: true,
+        specialty: "Furniture & Decor"
     },
     {
         id: "AMB003",
@@ -81,6 +83,7 @@ const AMBASSADOR_NETWORK = [
         services: ["pickup"],
         rating: 4.5,
         is_active: false,
+        specialty: "General Goods"
     },
 ];
 
@@ -114,6 +117,7 @@ const selectAmbassadorPrompt = ai.definePrompt({
     name: 'selectAmbassadorPrompt',
     input: { schema: AmbassadorFlowInputSchema.extend({ rawAmbassadors: z.string() }) },
     output: { schema: AmbassadorListSchema },
+    model: 'googleai/gemini-2.5-flash',
     prompt: `
       The user has decided to proceed with a {{action}} action for the following item:
       Title: {{title}}
@@ -150,7 +154,7 @@ const selectAmbassadorFlow = ai.defineFlow(
     // 2. Use the LLM to process and format the raw data into the required structured output.
     const {output} = await selectAmbassadorPrompt({
         ...input,
-        rawAmbassadors: JSON.stringify(rawAmbassadors, null, 2),
+        rawAmbassadors: JSON.stringify(rawAmbassadors.map(a => ({...a, area: a.location_city, expectedPickupTime: '1-2 days'})), null, 2),
     });
 
     // The response.output is a type-safe object thanks to structured output

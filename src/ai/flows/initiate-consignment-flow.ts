@@ -66,6 +66,39 @@ export async function initiateConsignment(input: ConsignmentInput): Promise<Cons
     return consignmentFlow(input);
 }
 
+/**
+ * Finds and assigns a local ambassador to a listing requiring pickup.
+ * This function is the core of the fulfillment integration logic.
+ */
+async function assign_fulfillment_ambassador(listing: Partial<ConsignmentOutput>, user_zip_code: string): Promise<Partial<ConsignmentOutput>> {
+    if (listing.listingStatus === "AWAITING_FULFILLMENT") {
+        console.log(`Attempting fulfillment in ZIP code ${user_zip_code}...`);
+        const matches = await find_local_ambassadors(user_zip_code, "pickup");
+
+        if (matches.length > 0) {
+            // For simplicity, assign the first available ambassador
+            const assigned_ambassador = matches[0];
+            
+            listing = {
+                ...listing,
+                listingStatus: "PICKUP_SCHEDULED",
+                assignedAmbassadorId: assigned_ambassador.id,
+                assignedAmbassadorName: assigned_ambassador.name,
+                pickupFee: 15.00, // Flat fee example
+            };
+            console.log(`✅ Success: Ambassador **${assigned_ambassador.name}** assigned for pickup.`);
+        } else {
+            listing = {
+                ...listing,
+                listingStatus: "PICKUP_UNAVAILABLE",
+                notes: "No active pickup ambassadors in this ZIP code.",
+            };
+            console.log(`❌ Warning: No pickup ambassador found in ZIP ${user_zip_code}.`);
+        }
+    }
+    return listing;
+}
+
 
 const consignmentFlow = ai.defineFlow(
   {
@@ -80,34 +113,13 @@ const consignmentFlow = ai.defineFlow(
     };
 
     if (listing.fulfillmentNeeded) {
-        console.log(`Attempting fulfillment in ZIP code ${listing.userZipCode}...`);
-        const matches = await find_local_ambassadors(listing.userZipCode, "pickup");
-
-        if (matches.length > 0) {
-            // For simplicity, assign the first available ambassador
-            const assigned_ambassador = matches[0];
-            
-            updatedListing = {
-                ...updatedListing,
-                listingStatus: "PICKUP_SCHEDULED",
-                assignedAmbassadorId: assigned_ambassador.id,
-                assignedAmbassadorName: assigned_ambassador.name,
-                pickupFee: 15.00, // Flat fee example
-            };
-            console.log(`✅ Success: Ambassador **${assigned_ambassador.name}** assigned for pickup.`);
-        } else {
-            updatedListing = {
-                ...updatedListing,
-                listingStatus: "PICKUP_UNAVAILABLE",
-                notes: "No active pickup ambassadors in this ZIP code.",
-            };
-            console.log(`❌ Warning: No pickup ambassador found in ZIP ${listing.userZipCode}.`);
-        }
+        updatedListing = await assign_fulfillment_ambassador(updatedListing, listing.userZipCode);
     }
     
     // Use an LLM to format the final output just in case, and ensure schema adherence
     const response = await ai.generate({
         prompt: `Format this data into the required output schema: ${JSON.stringify(updatedListing)}`,
+        model: 'googleai/gemini-2.5-flash',
         output: { schema: ConsignmentOutputSchema },
     });
 
