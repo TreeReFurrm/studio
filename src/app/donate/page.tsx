@@ -1,4 +1,3 @@
-
 'use client';
 
 import { DollarSign, Gift, ArrowRight, UserPlus, Heart, Info, Loader2 } from 'lucide-react';
@@ -99,7 +98,7 @@ export default function DonationPage() {
                 Our Big Mission & Transparency
             </CardTitle>
         </CardHeader>
-        <CardContent className="text-sm space-y-2">
+        <CardContent className="space-y-2 text-sm">
             <p>
                 ReFurrm SmartScan's core goal is to prevent valuable items from being lost by providing emergency, ethical support through our "LEAN on ReFurrm" program. <Button variant="link" asChild className="p-0 h-auto"><Link href="#">Learn More</Link></Button>
             </p>
@@ -177,7 +176,7 @@ export default function DonationPage() {
                   ReFurrbish an Item
                 </CardTitle>
                 <CardDescription>
-                  "ReFurrbish" means to donate an item for ethical resale. 100% of net proceeds fund the LEAN Foundation.
+                  ReFurrbish means to donate an item for ethical resale. 100% of net proceeds fund the LEAN Foundation.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
