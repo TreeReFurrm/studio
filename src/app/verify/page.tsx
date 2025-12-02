@@ -9,7 +9,7 @@ export default function VerifyPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold tracking-tight">Ethical Pricing Tool</CardTitle>
           <CardDescription className="text-lg text-muted-foreground">
-            Snap a photo of any item to get its True Market Value instantly.
+            Snap an item to get an instant, data-driven market valuation and suggested listing price.
           </CardDescription>
         </CardHeader>
       </Card>

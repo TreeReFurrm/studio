@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,16 +11,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, DollarSign, Heart, AlertTriangle, Gift, Copy, Share2, Upload, ArrowRight, Pencil, Info } from 'lucide-react';
+import { Loader2, Sparkles, DollarSign, ArrowRight, Pencil, Info } from 'lucide-react';
 import { Badge } from '../ui/badge';
-import { useUser } from '@/firebase';
-import { useRouter } from 'next/navigation';
+import { useUser, useFirestore, addDocumentNonBlocking } from '@/firebase';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { ImageUploader } from './image-uploader';
 import { scanItem, type ScanItemOutput } from '@/ai/flows/scan-item';
 import { Progress } from '../ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Switch } from '../ui/switch';
+import { collection, serverTimestamp } from 'firebase/firestore';
 
 const listingSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters.'),
@@ -28,28 +30,59 @@ const listingSchema = z.object({
   condition: z.string().optional(),
   tags: z.array(z.string()).optional(),
   publishToRefurrm: z.boolean().default(true),
+  image: z.string().optional(), // Holds data URI from uploader or URL params
 });
 
 type ListingFormData = z.infer<typeof listingSchema>;
 
 export function InstantListingGenerator() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [aiResult, setAiResult] = useState<ScanItemOutput | null>(null);
   
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const { user } = useUser();
+  const firestore = useFirestore();
 
   const form = useForm<ListingFormData>({
     resolver: zodResolver(listingSchema),
+    defaultValues: {
+        publishToRefurrm: true,
+        tags: [],
+    }
   });
 
+  // Pre-fill form from URL params (e.g., from Verification Tool)
+  useEffect(() => {
+    if (searchParams.has('title')) {
+        const prefillData: Partial<ListingFormData> = {};
+        prefillData.title = searchParams.get('title') || '';
+        prefillData.description = searchParams.get('description') || '';
+        prefillData.price = parseFloat(searchParams.get('price') || '0');
+        const imgUri = searchParams.get('img');
+        if(imgUri) {
+            prefillData.image = imgUri;
+        }
+
+        form.reset(prefillData);
+        if(imgUri) {
+             setAiResult({
+                suggestedTitle: prefillData.title,
+                suggestedDescription: prefillData.description || '',
+                maxPrice: prefillData.price,
+             } as ScanItemOutput)
+        }
+        setCurrentStep(2);
+    }
+  }, [searchParams, form]);
+
+
   const handleImageUpload = async (dataUri: string | null) => {
-    setPhotoDataUri(dataUri);
     if (dataUri) {
+      form.setValue('image', dataUri);
       setIsGenerating(true);
       try {
         const result = await scanItem({ photoDataUri: dataUri });
@@ -61,6 +94,7 @@ export function InstantListingGenerator() {
           tags: result.categoryTag ? [result.categoryTag.replace(/_/g, ' ')] : [],
           condition: 'Good', // Default condition
           publishToRefurrm: true,
+          image: dataUri,
         });
         setCurrentStep(2);
       } catch (error) {
@@ -73,19 +107,51 @@ export function InstantListingGenerator() {
       } finally {
         setIsGenerating(false);
       }
+    } else {
+        form.setValue('image', undefined);
     }
   };
 
-  const onSubmit = (data: ListingFormData) => {
+  const onSubmit = async (data: ListingFormData) => {
+    if (!user || !firestore) {
+      toast({ title: 'Please log in to publish a listing.', variant: 'destructive' });
+      return;
+    }
+    
+    if (!data.image) {
+      toast({ title: 'An image is required to publish a listing.', variant: 'destructive' });
+      return;
+    }
+
     setIsSubmitting(true);
-    // In a real app, you would handle publishing to ReFurrm and other marketplaces here.
-    toast({
-      title: "Listing Published!",
-      description: `${data.title} is now live on the ReFurrm Ethical Resale.`,
-    });
-    setTimeout(() => {
+    
+    try {
+        const itemsCollection = collection(firestore, 'items');
+        const newItem = {
+            title: data.title,
+            description: data.description,
+            price: data.price,
+            tags: data.tags || [],
+            imageUrl: data.image, // In a real app, this would be a URL after uploading to storage
+            imageHint: data.tags?.[0] || 'item',
+            userId: user.uid,
+            status: 'listed',
+            createdAt: serverTimestamp(),
+            condition: data.condition,
+        };
+        await addDocumentNonBlocking(itemsCollection, newItem);
+
+        toast({
+        title: "Listing Published!",
+        description: `${data.title} is now live on the ReFurrm Ethical Resale.`,
+        });
         router.push('/marketplace');
-    }, 1500)
+
+    } catch (error) {
+        console.error("Publishing failed:", error);
+        toast({ title: 'Publishing Failed', description: 'Could not save your listing. Please try again.', variant: 'destructive' });
+        setIsSubmitting(false);
+    }
   };
   
   const progress = (currentStep / 3) * 100;
@@ -141,7 +207,7 @@ export function InstantListingGenerator() {
                                 </div>
                             </FormControl>
                              <FormDescription className="text-xs">
-                                Suggested fair price: ${aiResult?.minPrice.toFixed(2)} - ${aiResult?.maxPrice.toFixed(2)}
+                                {aiResult?.minPrice && `Suggested fair price: $${aiResult.minPrice.toFixed(2)} - $${aiResult.maxPrice.toFixed(2)}`}
                             </FormDescription>
                             <FormMessage />
                             </FormItem>
@@ -194,14 +260,16 @@ export function InstantListingGenerator() {
                     )}
                 />
                 
-                <Alert>
-                    <Info className="h-4 w-4"/>
-                    <AlertTitle>AI Confidence: {aiResult?.authenticityVerdict === 'AUTHENTIC' ? '92%' : '82%'}</AlertTitle>
-                    <AlertDescription>
-                        {aiResult?.appraisalNote}
-                        <Button variant="link" size="sm" className="p-0 h-auto ml-1">Explain price</Button>
-                    </AlertDescription>
-                </Alert>
+                {aiResult && (
+                    <Alert>
+                        <Info className="h-4 w-4"/>
+                        <AlertTitle>AI Confidence: {aiResult?.authenticityVerdict === 'AUTHENTIC' ? '92%' : '82%'}</AlertTitle>
+                        <AlertDescription>
+                            {aiResult?.appraisalNote}
+                            <Button variant="link" size="sm" className="p-0 h-auto ml-1">Explain price</Button>
+                        </AlertDescription>
+                    </Alert>
+                )}
 
 
             </CardContent>
