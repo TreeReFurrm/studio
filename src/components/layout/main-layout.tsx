@@ -26,10 +26,10 @@ export function MainLayout({ children }: { children: ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Verify Value">
+              <SidebarMenuButton asChild tooltip="Price Verification Tool">
                 <Link href="/verify">
                   <ScanLine />
-                  <span>Verify Value</span>
+                  <span>Price Verification Tool</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
