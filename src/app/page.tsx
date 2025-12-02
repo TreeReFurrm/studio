@@ -1,8 +1,35 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, ScanLine, ShoppingCart, ArrowRight, Wrench } from "lucide-react";
+import { BadgePercent, Sparkles, CheckCircle2, LayoutGrid } from "lucide-react";
 import Link from "next/link";
+
+const featureCards = [
+  {
+    title: "Ethical Price Engine",
+    description: "Get a fair price range based on real sales data, ensuring a quick and realistic sale.",
+    icon: BadgePercent,
+    href: "/verify",
+  },
+  {
+    title: "Instant Listing Generator",
+    description: "Generate a complete, professional listing from just a photo in seconds.",
+    icon: Sparkles,
+    href: "/list",
+  },
+  {
+    title: "Scan Your Item",
+    description: "Instantly identify any item to get its true resale or retail value.",
+    icon: CheckCircle2,
+    href: "/verify",
+  },
+  {
+    title: "Marketplace",
+    description: "Browse curated listings or sell your own items on our ethical exchange.",
+    icon: LayoutGrid,
+    href: "/marketplace",
+  }
+];
 
 export default function Home() {
   return (
@@ -13,75 +40,22 @@ export default function Home() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-        <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <PlusCircle className="text-primary" />
-              <span>Ready to Declutter & Sell?</span>
-            </CardTitle>
-            <CardDescription>
-              Let our AI create your first listing and turn your items into assets. Use our Instant Listing Generator to begin. Just upload a photo and let our AI do the heavy lifting, from writing an SEO-optimized title to suggesting a fair price.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow flex items-end">
-            <Button asChild className="w-full">
-              <Link href="/list">Create Your First Listing <ArrowRight className="ml-2" /></Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ScanLine className="text-primary" />
-              <span>Verify Item Value</span>
-            </CardTitle>
-            <CardDescription>
-              At a flea market? Scan an item to see its true market value before you buy.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow flex items-end">
-            <Button asChild className="w-full">
-              <Link href="/verify">Verify Value <ArrowRight className="ml-2" /></Link>
-            </Button>
-          </CardContent>
-        </Card>
-        
-        <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShoppingCart className="text-primary" />
-              <span>Browse Marketplace</span>
-            </CardTitle>
-            <CardDescription>
-              Explore the ReFurrm Exchange for unique finds from other users.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow flex items-end">
-            <Button asChild className="w-full">
-              <Link href="/marketplace">Go to Marketplace <ArrowRight className="ml-2" /></Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="flex flex-col rounded-lg shadow-sm hover:shadow-lg transition-shadow md:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Wrench className="text-primary" />
-              <span>Ambassador Services</span>
-            </CardTitle>
-            <CardDescription>
-             Need a hand with a big project? Request a clean-out or organization service.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow flex items-end">
-            <Button asChild className="w-full">
-              <Link href="/services">Request a Service <ArrowRight className="ml-2" /></Link>
-            </Button>
-          </CardContent>
-        </Card>
+        {featureCards.map((feature) => (
+          <Link href={feature.href} key={feature.title} className="flex">
+            <Card className="flex flex-col w-full rounded-lg shadow-sm hover:shadow-lg transition-shadow hover:bg-card/95 cursor-pointer">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>{feature.title}</span>
+                  <feature.icon className="h-5 w-5 text-muted-foreground" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-sm text-muted-foreground">{feature.description}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
-
     </div>
   );
 }
