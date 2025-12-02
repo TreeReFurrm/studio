@@ -6,7 +6,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { upcDealChecker, type UpcInput, type UpcOutput } from '@/ai/flows/upc-deal-checker';
 import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Input } from '../ui/input';
 import { Loader2, Sparkles, DollarSign, TrendingUp, AlertCircle, BadgeCheck, Barcode } from 'lucide-react';
@@ -16,8 +16,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { z } from 'zod';
 
 const upcSchema = z.object({
-  upcCode: z.string().min(10, 'UPC must be at least 10 digits.').max(14, 'UPC cannot be more than 14 digits.'),
-  askingPrice: z.coerce.number().min(0, 'Asking price must be a positive number.'),
+  upcCode: z.string().min(10, 'UPC must be at least 10-14 digits.').max(14, 'UPC must be at least 10-14 digits.'),
+  askingPrice: z.coerce.number().min(0.01, 'Please enter a price greater than 0.'),
 });
 
 export function UpcChecker() {
@@ -39,6 +39,13 @@ export function UpcChecker() {
     try {
       const output = await upcDealChecker(data);
       setResult(output);
+      if (!output.comparisonAvailable) {
+        toast({
+            variant: "default",
+            title: "UPC Not Found",
+            description: "We couldn't find this UPC in our database. Results may be limited.",
+        });
+      }
     } catch (error) {
       console.error(error);
       toast({
@@ -59,14 +66,23 @@ export function UpcChecker() {
 
   const getVerdictInfo = (verdict: UpcOutput['verdict']) => {
     switch (verdict) {
-      case 'BUY':
+      case 'Excellent Deal':
         return { icon: BadgeCheck, color: 'text-green-500', text: 'Excellent Deal' };
-      case 'HOLD':
+      case 'Potential Deal':
         return { icon: TrendingUp, color: 'text-blue-500', text: 'Potential Deal' };
       default:
         return { icon: AlertCircle, color: 'text-destructive', text: 'Warning' };
     }
   };
+
+  if (isLoading) {
+      return (
+        <div className="flex flex-col items-center gap-4 text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="text-muted-foreground">Analyzing deal against live market data...</p>
+        </div>
+      )
+  }
 
   if (result) {
     const verdictInfo = getVerdictInfo(result.verdict);
@@ -78,7 +94,7 @@ export function UpcChecker() {
             <CardDescription>UPC: {form.getValues('upcCode')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Alert variant={result.verdict === 'WARNING' ? 'destructive' : 'default'} className="text-left">
+            <Alert variant={result.verdict === 'Warning' ? 'destructive' : 'default'} className="text-left">
               <verdictInfo.icon className={verdictInfo.color} />
               <AlertTitle>{verdictInfo.text}</AlertTitle>
               <AlertDescription>
@@ -108,10 +124,12 @@ export function UpcChecker() {
                 </TableBody>
             </Table>
           </CardContent>
+          <CardFooter>
+            <Button onClick={handleReset} variant="outline" className="w-full">
+                Check Another UPC
+            </Button>
+          </CardFooter>
         </Card>
-        <Button onClick={handleReset} variant="outline" className="w-full max-w-xs">
-          Check Another UPC
-        </Button>
       </div>
     );
   }
@@ -126,11 +144,11 @@ export function UpcChecker() {
               name="upcCode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>UPC Code</FormLabel>
+                  <FormLabel>UPC or Barcode (10-14 digits)</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Barcode className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input placeholder="Enter 10-14 digit UPC" className="pl-8" {...field} />
+                      <Input placeholder="e.g. 0123456789012" className="pl-8" {...field} />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -142,11 +160,11 @@ export function UpcChecker() {
               name="askingPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Asking Price</FormLabel>
+                  <FormLabel>Asking Price (USD)</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input type="number" step="0.01" placeholder="Enter price to check profit" className="pl-8" {...field} />
+                      <Input type="number" step="0.01" placeholder="e.g. 149.99" className="pl-8" {...field} />
                     </div>
                   </FormControl>
                   <FormMessage />

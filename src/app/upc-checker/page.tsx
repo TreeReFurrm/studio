@@ -9,7 +9,7 @@ export default function UpcCheckerPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold tracking-tight">UPC Deal Checker</CardTitle>
           <CardDescription className="text-lg text-muted-foreground">
-            Enter a UPC and asking price to analyze the deal.
+            Enter a UPC and asking price to instantly evaluate profit and resale potential.
           </CardDescription>
         </CardHeader>
       </Card>

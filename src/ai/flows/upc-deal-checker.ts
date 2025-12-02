@@ -22,7 +22,7 @@ export type UpcInput = z.infer<typeof UpcInputSchema>;
 const UpcOutputSchema = z.object({
   itemName: z.string().describe('The identified name of the product.'),
   comparisonAvailable: z.boolean().describe('True if the UPC was found in the database.'),
-  verdict: z.enum(['BUY', 'HOLD', 'WARNING']).describe('The Deal Checker verdict: BUY (high profit), HOLD (low profit), or WARNING (no resale).'),
+  verdict: z.enum(['Excellent Deal', 'Potential Deal', 'Warning']).describe('The Deal Checker verdict: Excellent Deal (high profit), Potential Deal (low profit), or Warning (no resale).'),
   potentialProfit: z.number().describe('The estimated net profit after fees.'),
   suggestedListingPrice: z.number().describe('The AI suggested price to list the item for fast resale.'),
   pricingData: z.array(VendorPricingSchema).describe('Detailed list of prices found across vendors.'),
@@ -89,7 +89,7 @@ const upcDealCheckerFlow = ai.defineFlow(
         return {
             itemName: 'Unknown Product',
             comparisonAvailable: false,
-            verdict: 'WARNING',
+            verdict: 'Warning',
             potentialProfit: 0,
             suggestedListingPrice: 0,
             pricingData: [],
@@ -117,11 +117,11 @@ const upcDealCheckerFlow = ai.defineFlow(
     const potentialGrossProfit = netResaleValue - askingPrice;
     
     // 3. Set Final Verdict
-    let verdict: 'BUY' | 'HOLD' | 'WARNING' = 'HOLD';
-    if (potentialGrossProfit > 100 && avgResale > askingPrice * 1.5) {
-        verdict = 'BUY'; // High Profit and good margin
+    let verdict: 'Excellent Deal' | 'Potential Deal' | 'Warning' = 'Potential Deal';
+    if (potentialGrossProfit > 50 && avgResale > askingPrice * 1.5) {
+        verdict = 'Excellent Deal'; // High Profit and good margin
     } else if (potentialGrossProfit <= 0) {
-        verdict = 'WARNING'; // Likely a loss
+        verdict = 'Warning'; // Likely a loss
     }
     
     return {
