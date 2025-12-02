@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { MainLayout } from '@/components/layout/main-layout';
 import { FirebaseClientProvider } from '@/firebase';
+import { AnalyticsProvider } from '@/components/AnalyticsProvider';
 
 export const metadata: Metadata = {
   title: 'ReFurrm SmartScan',
@@ -24,9 +25,11 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <FirebaseClientProvider>
-          <MainLayout>
-            {children}
-          </MainLayout>
+          <AnalyticsProvider>
+            <MainLayout>
+              {children}
+            </MainLayout>
+          </AnalyticsProvider>
         </FirebaseClientProvider>
         <Toaster />
       </body>
