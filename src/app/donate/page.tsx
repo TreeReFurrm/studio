@@ -176,13 +176,15 @@ export default function DonationPage() {
                   ReFurrbish an Item
                 </CardTitle>
                 <CardDescription>
-                  ReFurrbish means to donate an item for ethical resale. 100% of net proceeds fund the LEAN Foundation.
+                  ReFurrbish means to donate an item for ethical resale.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Our AI assesses your item's value and an Ambassador handles pickup. It's the easiest way to make a difference.
-                  </p>
+                  <ul className="space-y-2 text-sm text-muted-foreground mb-4 list-disc pl-5">
+                    <li>Use our AI tools to submit your item.</li>
+                    <li>We handle the assessment and ethical resale to maximize the contribution.</li>
+                    <li>All net proceeds from the sale are directed to the LEAN Foundation.</li>
+                  </ul>
                   <Button onClick={handleItemDonate} className="w-full mt-auto" disabled={isProcessing}>
                     ReFurrbish an Item <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
