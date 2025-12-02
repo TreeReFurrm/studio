@@ -142,6 +142,9 @@ export default function AmbassadorHowItWorksPage() {
         </CardContent>
       </Card>
 
+      <footer className="text-center text-sm text-muted-foreground pt-4 border-t">
+        For hardship related support, contact <a href="mailto:lean@refurrm.org" className="text-primary underline">lean@refurrm.org</a>.
+      </footer>
     </div>
   );
 }

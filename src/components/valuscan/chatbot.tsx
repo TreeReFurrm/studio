@@ -33,7 +33,7 @@ const botIntents = {
   },
   donation_how_it_works: {
     id: 'donation_how_it_works',
-    message: "Here is how donations work:\n\n1. You start a donation from the Donate tab or with an Ambassador.\n2. We intake and lightly clean or repair your items.\n3. SmartScan sets a fair resale value.\n4. Items are listed in the ReFURRM Exchange.\n5. Net proceeds support hardship assistance and item returns.",
+    message: "Here is how donations work:\n\n1. You start a donation from the Donate tab or with an Ambassador.\n2. We intake and lightly clean or repair your items.\n3. SmartScan sets a fair resale value.\n4. Items are listed in the ReFURRM Ethical Resale.\n5. Net proceeds support hardship assistance and item returns.",
     options: [{ text: 'Back to donation help', next: 'donation_help' }]
   },
   donation_items: {
@@ -73,34 +73,29 @@ const botIntents = {
   },
   hardship_help: {
     id: 'hardship_help',
-    message: "The LEAN Foundation is our hardship branch. It offers small, targeted help in some cases where users are at risk of losing a unit to auction.",
+    message: "If your situation is time-sensitive, I can immediately forward your case to the LEAN Foundation team at lean@refurrm.org.",
     options: [
-        { text: "Who qualifies", next: 'hardship_qualify' },
-        { text: "How to request help", next: 'hardship_request' },
-        { text: "How fast can help arrive", next: 'hardship_speed' },
+        { text: "Send My Case to LEAN", next: 'escalate_lean' },
+        { text: "Open Hardship Request Form", next: 'hardship_request_form' },
+        { text: "Learn more about LEAN", next: 'lean_foundation_info' },
         { text: 'Back to main menu', next: 'initial' },
     ]
   },
-  hardship_qualify: {
-    id: 'hardship_qualify',
-    message: "Potentially eligible users are:\n\n- Active ReFURRM users\n- At real risk of a storage auction or loss of key belongings\n- Able to provide basic proof of their situation.\n\nFunding is limited and not guaranteed, but every request is reviewed.",
-    options: [{ text: 'Back to hardship help', next: 'hardship_help' }]
+  lean_foundation_info: {
+    id: 'lean_foundation_info',
+    message: "The LEAN Foundation is our hardship branch. It offers small, targeted help in some cases where users are at risk of losing a unit to auction. Potentially eligible users are active ReFURRM users at real risk of a storage auction or loss of key belongings, who are able to provide basic proof of their situation. Funding is limited and not guaranteed, but every request is reviewed.",
+    options: [ { text: "Send My Case to LEAN", next: 'escalate_lean' }, { text: 'Back to main menu', next: 'initial' } ]
   },
-  hardship_request: {
-    id: 'hardship_request',
-    message: "To request hardship help:\n\n1. Go to Account → Help → Request Hardship Review.\n2. Answer a few short questions about your storage situation.\n3. Upload any notices you have if possible.\n\nA human will review your case as soon as they can.",
-    options: [{ text: 'Back to hardship help', next: 'hardship_help' }]
-  },
-  hardship_speed: {
-    id: 'hardship_speed',
-    message: "When funding is available and your case is approved, some support can be released within 24 to 48 hours. Timing depends on partners and your storage provider.",
+  hardship_request_form: {
+    id: 'hardship_request_form',
+    message: "To request hardship help, please fill out the form which you can access via the Help Center page. Go to Help Center -> Hardship Assistance -> Request Hardship Review.",
     options: [{ text: 'Back to hardship help', next: 'hardship_help' }]
   },
   smartscan_help: {
     id: 'smartscan_help',
     message: "SmartScan helps you check item value and UPC deals using live resale data. It is a strong guide, not a guarantee.",
     options: [
-        { text: "How to use Verify Value", next: 'smartscan_verify' },
+        { text: "How to use Ethical Pricing Tool", next: 'smartscan_verify' },
         { text: "How to use UPC Checker", next: 'smartscan_upc' },
         { text: "Why value might look off", next: 'smartscan_value_off' },
         { text: 'Back to main menu', next: 'initial' },
@@ -108,7 +103,7 @@ const botIntents = {
   },
   smartscan_verify: {
     id: 'smartscan_verify',
-    message: "To use Verify Value:\n\n1. Open SmartScan → Verify Value.\n2. Upload a photo or enter the item name and condition.\n3. Choose the context, like yard sale or storage unit.\n4. Submit to see the estimated resale range.",
+    message: "To use the Ethical Pricing Tool:\n\n1. Open Ethical Pricing Tool from the menu.\n2. Upload a photo or enter the item name and condition.\n3. Choose the context, like yard sale or storage unit.\n4. Submit to see the estimated resale range.",
     options: [{ text: 'Back to SmartScan help', next: 'smartscan_help' }]
   },
   smartscan_upc: {
@@ -123,7 +118,7 @@ const botIntents = {
   },
   marketplace_help: {
     id: 'marketplace_help',
-    message: "The ReFURRM Exchange is our marketplace for your items and ReFURRBISHED inventory.",
+    message: "The ReFURRM Ethical Resale is our marketplace for your items and ReFURRBISHED inventory.",
     options: [
         { text: "How to list an item", next: 'marketplace_list' },
         { text: "Edit or update a listing", next: 'marketplace_edit' },
@@ -133,7 +128,7 @@ const botIntents = {
   },
   marketplace_list: {
     id: 'marketplace_list',
-    message: "To list an item:\n\n1. Tap “List an Item” on the dashboard.\n2. Upload a photo and confirm the condition.\n3. The AI will generate a title and description for you to review.\n4. Set your price and publish to the Exchange.",
+    message: "To list an item:\n\n1. Tap “List an Item” on the dashboard.\n2. Upload a photo and confirm the condition.\n3. The AI will generate a title and description for you to review.\n4. Set your price and publish to the Ethical Resale.",
     options: [{ text: 'Back to Marketplace help', next: 'marketplace_help' }]
   },
   marketplace_edit: {
@@ -174,6 +169,11 @@ const botIntents = {
   escalate: {
     id: 'escalate',
     message: "Thank you. Your request has been sent to the support team. They will respond inside the app or by email as soon as they can.",
+    options: [{ text: 'Start over', next: 'initial' }]
+  },
+  escalate_lean: {
+    id: 'escalate_lean',
+    message: "Your request has been sent to the LEAN Foundation team at lean@refurrm.org. A human will review your case and respond as soon as possible.",
     options: [{ text: 'Start over', next: 'initial' }]
   }
 };

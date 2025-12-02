@@ -8,6 +8,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 const faqSections = {
   "SmartScan Tools": [
@@ -142,6 +145,18 @@ export default function FaqPage() {
             />
         </div>
       </header>
+
+      <Card className="bg-destructive/10 border-destructive/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><AlertCircle className="size-5"/> Hardship Assistance</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">If you need help preventing a storage auction or recovering items never meant to be sold, start a hardship request here. Human support email: <a href="mailto:lean@refurrm.org" className="text-primary underline">lean@refurrm.org</a></p>
+          <Button asChild>
+            <a href="mailto:lean@refurrm.org">Request Hardship Review</a>
+          </Button>
+        </CardContent>
+      </Card>
 
       {Object.keys(faqSections).map(section => (
         <Card key={section}>
