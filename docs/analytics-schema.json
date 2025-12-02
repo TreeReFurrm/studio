@@ -1,0 +1,703 @@
+
+{
+  "components": {
+    "schemas": {
+      "EventBase": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "Event name"
+          },
+          "user_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Authenticated user id or null if anonymous",
+            "example": "user_12345"
+          },
+          "anonymous_id": {
+            "type": "string",
+            "description": "Anonymous identifier for session-level tracking",
+            "example": "anon_abc123"
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Session identifier",
+            "example": "sess_98765"
+          },
+          "page": {
+            "type": "string",
+            "example": "smartscan_pricing_tool"
+          },
+          "page_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://.../verify"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-02T14:56:05Z"
+          },
+          "experiment_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "exp_pricing_v2"
+          },
+          "variant": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "variant_a"
+          }
+        },
+        "required": [
+          "event",
+          "anonymous_id",
+          "session_id",
+          "page",
+          "page_url",
+          "timestamp"
+        ],
+        "additionalProperties": false
+      },
+      "upload_start": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_method": {
+                "type": "string",
+                "enum": [
+                  "file_upload",
+                  "camera"
+                ],
+                "example": "camera"
+              },
+              "file_count": {
+                "type": "integer",
+                "minimum": 1,
+                "example": 1
+              }
+            },
+            "required": [
+              "upload_method",
+              "file_count"
+            ]
+          }
+        ]
+      },
+      "upload_complete": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": "string",
+                "example": "up_456abc"
+              },
+              "file_type": {
+                "type": "string",
+                "example": "image/jpeg"
+              },
+              "file_size_bytes": {
+                "type": "integer",
+                "example": 234567
+              },
+              "image_width": {
+                "type": "integer",
+                "example": 2048
+              },
+              "image_height": {
+                "type": "integer",
+                "example": 1536
+              },
+              "file_count": {
+                "type": "integer",
+                "example": 1
+              },
+              "processing_start_ts": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-02T14:55:10Z"
+              },
+              "processing_finish_ts": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-02T14:55:20Z"
+              }
+            },
+            "required": [
+              "upload_id",
+              "file_type",
+              "file_size_bytes",
+              "file_count"
+            ]
+          }
+        ]
+      },
+      "upload_failed": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "error_code": {
+                "type": "string",
+                "example": "upload_network_error"
+              },
+              "error_message": {
+                "type": "string",
+                "example": "Network timeout while uploading file"
+              },
+              "attempt_count": {
+                "type": "integer",
+                "example": 1
+              }
+            },
+            "required": [
+              "error_code",
+              "error_message"
+            ]
+          }
+        ]
+      },
+      "generate_request": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": "up_456abc"
+              },
+              "demo_id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": null
+              },
+              "valuation_context": {
+                "type": "string",
+                "enum": [
+                  "yard_sale",
+                  "marketplace_sell",
+                  "wholesale",
+                  "buying"
+                ],
+                "example": "yard_sale"
+              },
+              "condition_input": {
+                "type": "string",
+                "enum": [
+                  "new",
+                  "like_new",
+                  "good",
+                  "fair",
+                  "for_parts"
+                ],
+                "example": "good"
+              },
+              "item_name": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": "iPhone 13 Pro Max"
+              },
+              "asking_price_entered": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "example": 350
+              },
+              "request_ts": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-12-02T14:55:30Z"
+              }
+            },
+            "required": [
+              "valuation_context",
+              "condition_input"
+            ]
+          }
+        ]
+      },
+      "generate_complete": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": "up_456abc"
+              },
+              "suggested_price_min": {
+                "type": "number",
+                "example": 320
+              },
+              "suggested_price_max": {
+                "type": "number",
+                "example": 380
+              },
+              "currency": {
+                "type": "string",
+                "example": "USD"
+              },
+              "confidence_score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 82
+              },
+              "sample_size": {
+                "type": "integer",
+                "example": 12
+              },
+              "generated_title": {
+                "type": "string",
+                "example": "Apple iPhone 13 Pro Max 256GB - Graphite"
+              },
+              "generated_description_snippet": {
+                "type": "string",
+                "example": "Good condition, minor wear on edges"
+              },
+              "comps_available": {
+                "type": "boolean",
+                "example": true
+              },
+              "processing_ms": {
+                "type": "integer",
+                "example": 1250
+              }
+            },
+            "required": [
+              "suggested_price_min",
+              "suggested_price_max",
+              "currency",
+              "confidence_score",
+              "sample_size"
+            ]
+          }
+        ]
+      },
+      "view_comparables_open": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": "string",
+                "example": "up_456abc"
+              },
+              "comps_count": {
+                "type": "integer",
+                "example": 12
+              },
+              "suggested_range_min": {
+                "type": "number",
+                "example": 320
+              },
+              "suggested_range_max": {
+                "type": "number",
+                "example": 380
+              },
+              "confidence_score": {
+                "type": "integer",
+                "example": 82
+              }
+            },
+            "required": [
+              "upload_id",
+              "comps_count"
+            ]
+          }
+        ]
+      },
+      "comparable_view": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": "string",
+                "example": "up_456abc"
+              },
+              "comparable_id": {
+                "type": "string",
+                "example": "comp_789"
+              },
+              "marketplace": {
+                "type": "string",
+                "example": "eBay"
+              },
+              "comparable_price": {
+                "type": "number",
+                "example": 375
+              },
+              "similarity_score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 92
+              }
+            },
+            "required": [
+              "upload_id",
+              "comparable_id"
+            ]
+          }
+        ]
+      },
+      "comparables_export": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": "string",
+                "example": "up_456abc"
+              },
+              "export_format": {
+                "type": "string",
+                "enum": [
+                  "csv",
+                  "json"
+                ],
+                "example": "csv"
+              },
+              "comps_exported_count": {
+                "type": "integer",
+                "example": 12
+              }
+            },
+            "required": [
+              "upload_id",
+              "export_format",
+              "comps_exported_count"
+            ]
+          }
+        ]
+      },
+      "compare_side_by_side": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": "string",
+                "example": "up_456abc"
+              },
+              "comparable_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2,
+                "maxItems": 3,
+                "example": [
+                  "comp_123",
+                  "comp_456"
+                ]
+              }
+            },
+            "required": [
+              "upload_id",
+              "comparable_ids"
+            ]
+          }
+        ]
+      },
+      "adjust_price_or_confidence": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": "string",
+                "example": "up_456abc"
+              },
+              "field_changed": {
+                "type": "string",
+                "enum": [
+                  "suggested_price",
+                  "condition",
+                  "title",
+                  "description",
+                  "confidence_score"
+                ],
+                "example": "suggested_price"
+              },
+              "old_value": {
+                "type": [
+                  "string",
+                  "number",
+                  "null"
+                ],
+                "example": "350.00"
+              },
+              "new_value": {
+                "type": [
+                  "string",
+                  "number",
+                  "null"
+                ],
+                "example": "349.00"
+              }
+            },
+            "required": [
+              "upload_id",
+              "field_changed",
+              "new_value"
+            ]
+          }
+        ]
+      },
+      "create_listing_from_appraisal": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "upload_id": {
+                "type": "string",
+                "example": "up_456abc"
+              },
+              "listing_id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": "list_777"
+              },
+              "listing_action": {
+                "type": "string",
+                "enum": [
+                  "create_draft",
+                  "publish"
+                ],
+                "example": "create_draft"
+              },
+              "chosen_price": {
+                "type": "number",
+                "example": 349
+              },
+              "marketplace_target": {
+                "type": [
+                  "string",
+                  "array"
+                ],
+                "example": "refurrm"
+              }
+            },
+            "required": [
+              "upload_id",
+              "listing_action",
+              "chosen_price"
+            ]
+          }
+        ]
+      },
+      "crosspost_selected": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "listing_id": {
+                "type": "string",
+                "example": "list_777"
+              },
+              "marketplaces": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "ebay",
+                  "mercari"
+                ]
+              },
+              "crosspost_confirmed": {
+                "type": "boolean",
+                "example": true
+              }
+            },
+            "required": [
+              "listing_id",
+              "marketplaces"
+            ]
+          }
+        ]
+      },
+      "demo_view": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "demo_id": {
+                "type": "string",
+                "example": "demo_iphone13"
+              },
+              "demo_steps_viewed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "upload",
+                  "generate",
+                  "comparables"
+                ]
+              }
+            },
+            "required": [
+              "demo_id",
+              "demo_steps_viewed"
+            ]
+          }
+        ]
+      },
+      "bulk_upload_complete": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "items_count": {
+                "type": "integer",
+                "example": 20
+              },
+              "success_count": {
+                "type": "integer",
+                "example": 20
+              },
+              "failure_count": {
+                "type": "integer",
+                "example": 0
+              },
+              "processing_time_ms": {
+                "type": "integer",
+                "example": 48000
+              }
+            },
+            "required": [
+              "items_count",
+              "success_count",
+              "failure_count"
+            ]
+          }
+        ]
+      },
+      "ui_interaction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "element_id": {
+                "type": "string",
+                "example": "camera_button"
+              },
+              "action": {
+                "type": "string",
+                "example": "click"
+              }
+            },
+            "required": [
+              "element_id",
+              "action"
+            ]
+          }
+        ]
+      },
+      "error_general": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EventBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "error_code": {
+                "type": "string",
+                "example": "ai_service_timeout"
+              },
+              "error_message": {
+                "type": "string",
+                "example": "AI service timed out after 30s"
+              },
+              "upload_id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": "up_456abc"
+              }
+            },
+            "required": [
+              "error_code",
+              "error_message"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+
+    
