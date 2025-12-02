@@ -292,7 +292,7 @@ export function ListingForm() {
                     </div>
                   </FormControl>
                    <FormDescription>
-                        Suggested range: ${parseFloat(initialData.minPrice).toFixed(2)} - ${parseFloat(initialData.maxPrice).toFixed(2)}
+                        Suggested fair price (based on recent sales): ${parseFloat(initialData.minPrice).toFixed(2)} - ${parseFloat(initialData.maxPrice).toFixed(2)}
                     </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -314,11 +314,11 @@ export function ListingForm() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
              <Button type="submit" size="lg" disabled={isSubmitting} onClick={() => setListingAction('SELL')} className="h-auto py-4 flex flex-col items-start text-left">
-                <span className="font-bold text-lg">Sell on Consignment</span>
+                <span className="font-bold text-lg">Publish to ReFurrm</span>
                 <span className="font-normal text-sm text-primary-foreground/80">Make money from your item. We handle the listing, you get the payout.</span>
             </Button>
              <Button type="button" variant="secondary" size="lg" disabled={isSubmitting} onClick={() => { setListingAction('DONATE'); form.handleSubmit(onSubmit)(); }} className="h-auto py-4 flex flex-col items-start text-left">
-                <span className="font-bold text-lg">Donate Item Proceeds</span>
+                <span className="font-bold text-lg">Export to Marketplace</span>
                 <span className="font-normal text-sm text-secondary-foreground/80">All proceeds from the sale will go to the LEAN Foundation.</span>
             </Button>
           </CardContent>

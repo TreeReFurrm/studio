@@ -158,6 +158,9 @@ export function VerificationTool() {
                             {authInfo.text}
                         </p>
                     </div>
+                     <CardDescription className="text-xs mt-1">
+                        AI confidence: {result.authenticity.confidenceScore.toFixed(0)}%
+                    </CardDescription>
                 </Card>
             </div>
              <p className="text-sm text-muted-foreground pt-2">{result.justification}</p>
