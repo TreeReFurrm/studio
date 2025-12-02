@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { useRouter } from 'next/navigation';
 import { Progress } from '../ui/progress';
+import { ComparablesModal } from './comparables-modal';
 
 const conditions = [
     "New (Sealed)",
@@ -187,6 +188,12 @@ export function VerificationTool() {
                     <p className="text-2xl font-bold text-primary">
                         ${result.minResaleValue.toFixed(2)} - ${result.maxResaleValue.toFixed(2)}
                     </p>
+                     <ComparablesModal
+                        priceRange={{min: result.minResaleValue, max: result.maxResaleValue}}
+                        confidence={result.authenticity.confidenceScore}
+                    >
+                        <Button variant="link" size="sm" className="p-0 h-auto">See comparables</Button>
+                    </ComparablesModal>
                 </Card>
                 <Card className={cn("p-4 text-center", authInfo.bgColor)}>
                     <CardDescription>Authenticity</CardDescription>
