@@ -28,6 +28,14 @@
           "type": "string",
           "description": "Last name of the user."
         },
+        "zipCode": {
+          "type": "string",
+          "description": "The user's primary ZIP code for location-based services."
+        },
+        "ambassadorId": {
+          "type": "string",
+          "description": "The ID of the Ambassador assigned to this user's region."
+        },
         "createdAt": {
           "type": "string",
           "description": "Timestamp of when the user account was created.",
@@ -41,6 +49,13 @@
             "Pro",
             "Ambassador"
           ]
+        },
+        "roles": {
+          "type": "array",
+          "description": "A list of roles assigned to the user, e.g., 'Ambassador'.",
+          "items": {
+            "type": "string"
+          }
         },
         "subscriptionStatus": {
           "type": "string",
@@ -149,6 +164,10 @@
         "sellerId": {
           "type": "string",
           "description": "Reference to the User who sold the item."
+        },
+        "ambassadorId": {
+          "type": "string",
+          "description": "The ID of the Ambassador who facilitated the sale, if any."
         },
         "saleDate": {
           "type": "string",
@@ -396,3 +415,5 @@
     "reasoning": "The Firestore structure has been updated to support the core business logic. The User entity now includes 'tier', 'subscriptionStatus', and 'stripeCustomerId' to manage user roles and billing. The Item entity has a 'status' to track its lifecycle (listed, sold, shipped) and 'aiEstimatedValue'. The Sale entity now more clearly separates seller and buyer IDs and links to an EthicalContribution, which is its own top-level collection to serve as a proper ledger for the LEAN Foundation. A new 'ServiceRequest' entity and collection have been added to handle specialized service requests, linking users to Ambassadors. This denormalized, segregated structure simplifies security rules and supports efficient queries for marketplace, user-specific, and administrative functions."
   }
 }
+
+    
