@@ -7,112 +7,123 @@ import {
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const faqSections = {
-  "SmartScan Basics": [
+  "SmartScan Tools": [
     {
       question: "What is SmartScan?",
-      answer: "SmartScan is ReFURRM’s AI-powered tool that lets you verify value, check UPC deals, list items instantly, and identify sentimental objects during intake."
-    },
-    {
-      question: "Does SmartScan store my photos?",
-      answer: "Only for the duration needed to generate your listing or appraisal. Everything else is deleted per policy."
+      answer: "SmartScan is ReFURRM’s AI tool that helps you verify value, scan UPC codes, generate listings, and flag items that might be emotionally significant."
     },
     {
       question: "How accurate is the value checker?",
-      answer: "It uses live-market resale data, trending demand, and condition scoring to give you a 90-percent confidence estimate."
+      answer: "SmartScan uses real time resale data and condition scoring for an estimated value. It is an informed guide, not a guarantee."
+    },
+    {
+      question: "Does SmartScan store my photos?",
+      answer: "Photos are stored only as long as needed for the listing or appraisal, then handled according to our data retention policy."
     }
   ],
-  "Listing Items": [
+  "Listing And Marketplace": [
     {
       question: "How do I list an item?",
-      answer: "Tap “List an Item,” upload a photo, confirm condition, and the AI will generate your listing automatically."
+      answer: "Select “List an Item,” upload a photo, confirm condition, edit any AI generated details, and publish to the ReFURRM Exchange."
     },
     {
-      question: "Can I edit the listing?",
-      answer: "Yes, you can edit everything before posting to the Exchange."
+      question: "Can I edit a listing after it is posted?",
+      answer: "Yes. You can update price, description, and photos as long as the item has not sold."
     },
-    {
-      question: "Do items get reviewed?",
-      answer: "Yes. A moderator checks for prohibited items and verifies safety compliance."
-    }
-  ],
-  "Marketplace": [
     {
       question: "What is the ReFURRM Exchange?",
-      answer: "A community marketplace where you can buy from other users or browse ReFURRBISHED items."
+      answer: "The Exchange is the marketplace where you can buy items from other users and browse ReFURRBISHED inventory."
     },
     {
-      question: "Why are some items marked “Sentimental Hold”?",
-      answer: "Those items are flagged as possibly belonging to original owners. They cannot be purchased."
+        question: "Why is an item marked “Sentimental Hold”?",
+        answer: "This label means the item may belong to an original owner. It is locked from sale while we investigate."
     }
   ],
-  "Services & Ambassadors": [
+  "Ambassador Services": [
     {
       question: "How much do Ambassador services cost?",
-      answer: "Costs vary by project size. A price estimate is shown before confirming."
+      answer: "Costs depend on project size and location. You will see a clear estimate before you confirm your booking."
     },
     {
       question: "Do Ambassadors remove trash?",
-      answer: "No. Their work focuses on salvage, organization, and ethical intake."
+      answer: "Ambassadors focus on sorting, salvage, and documentation. Large trash removal may require a separate hauling service."
     },
     {
-      question: "What happens if they find sentimental items?",
-      answer: "They log them in SmartScan, flag them, and initiate a return attempt."
+      question: "What happens if an Ambassador finds sentimental items?",
+      answer: "They flag them, log details into SmartScan, and either confirm with you or initiate a return process if the items belong to someone else."
     }
   ],
-  "Donations": [
+  "Donations And LEAN Foundation": [
     {
-      question: "Where do donation proceeds go?",
-      answer: "Into the LEAN Foundation hardship-prevention fund."
+      question: "What is the LEAN Foundation?",
+      answer: "The LEAN Foundation is ReFURRM’s hardship prevention branch that uses funds from resale and donations to help users facing auction or severe financial strain related to storage or housing."
     },
     {
-      question: "Can I track impact?",
-      answer: "Yes. The app displays anonymized weekly impact reports."
+        question: "Who can request hardship assistance?",
+        answer: "Any user who can show they are at risk of losing a storage unit or key belongings to auction, subject to available funding and verification."
+    },
+    {
+        question: "How fast can assistance be released?",
+        answer: "Once verified, many cases are processed within 24 to 48 hours, depending on partner processing times."
     }
   ],
-  "Auction-Prevention Assistance": [
+   "Auction Prevention And Returns": [
     {
-      question: "What is LEAN Foundation?",
-      answer: "ReFURRM’s hardship prevention branch. It provides micro-assistance for users facing storage auction loss."
+      question: "What if I find my belongings listed in the app?",
+      answer: "Contact support immediately through Account → Help. We freeze the listing and start a verification process to confirm ownership."
     },
     {
-      question: "Who qualifies?",
-      answer: "Any user verified as at risk of auction, subject to available funding."
+      question: "Can ReFURRM stop an auction for me?",
+      answer: "ReFURRM cannot guarantee that an auction will stop. LEAN Foundation can sometimes help with small targeted assistance when it is possible and funding is available."
     },
     {
-      question: "How fast is assistance released?",
-      answer: "Usually within 24 to 48 hours after verification."
+      question: "How do you verify original owners?",
+      answer: "We use a combination of documentation, account history, proof of rental, and internal checks before releasing any item as a confirmed return."
     }
   ],
-  "Account & Settings": [
+  "Account And Settings": [
     {
-      question: "How do I update my email or phone number?",
-      answer: "Go to Account → Edit Profile."
+      question: "How do I update my contact information?",
+      answer: "Go to Account → Edit Profile and update your email, phone number, or address."
     },
     {
-      question: "Can I disable notifications?",
-      answer: "Yes. Toggle under Account → Notifications."
+      question: "How do I change notification settings?",
+      answer: "Go to Account → Notifications and toggle on or off for listing updates, Ambassador messages, and impact reports."
     }
   ],
-  "Safety & Policies": [
+  "Safety And Policies": [
     {
-      question: "What items are prohibited from sale?",
-      answer: "Hazardous chemicals, weapons, expired food, counterfeit goods, and anything unsafe for resale."
+      question: "What items are prohibited?",
+      answer: "No weapons, hazardous materials, stolen goods, expired consumables, counterfeit items, or anything that violates local or federal law."
     },
     {
-      question: "Are returns allowed?",
-      answer: "Marketplace sales between users are final unless the seller misrepresented the item."
+      question: "Are sales final?",
+      answer: "Peer to peer sales are usually final. In cases of clear misrepresentation or safety concerns, contact support."
     },
-    {
-      question: "What if I find my own items for sale?",
-      answer: "Contact support immediately. ReFURRM will investigate and initiate return protocols if applicable."
+     {
+      question: "What happens if something feels wrong?",
+      answer: "If any interaction inside the app feels unsafe or exploitative, use Account → Help and a human will review your case."
     }
   ],
-  "Contact": [
+   "Technical Issues": [
     {
-      question: "How do I reach support?",
-      answer: "In-app messaging under Account → Support or email lean@refurrm.org."
+      question: "My photo will not upload",
+      answer: "Check your internet connection, then try again with a smaller file. If it still fails, restart the app and retry."
+    },
+    {
+      question: "My camera is not working",
+      answer: "Make sure camera permissions are enabled for the app in your device settings."
+    },
+     {
+      question: "The app will not log me in",
+      answer: "Confirm your email and password, then request a password reset if needed. If that fails, contact support."
+    },
+    {
+      question: "Value checker is not loading",
+      answer: "This may be a temporary connection issue. Try again in a few minutes. If the problem continues, report it under Account → Help."
     }
   ]
 };
@@ -122,9 +133,14 @@ type FaqSection = keyof typeof faqSections;
 export default function FaqPage() {
   return (
     <div className="container mx-auto max-w-3xl py-8 space-y-8">
-      <header className="text-center">
-        <Badge variant="outline">Support</Badge>
-        <h1 className="text-4xl font-bold tracking-tight mt-2">Frequently Asked Questions</h1>
+      <header className="text-center space-y-4">
+        <h1 className="text-4xl font-bold tracking-tight mt-2">Help Center and FAQ</h1>
+        <p className="text-xl text-muted-foreground">Find answers fast or search for a specific topic.</p>
+        <div className="px-4">
+            <Input 
+                placeholder="Search by keyword, tool, or question (e.g., 'camera not working', 'Ambassador pricing')"
+            />
+        </div>
       </header>
 
       {Object.keys(faqSections).map(section => (
