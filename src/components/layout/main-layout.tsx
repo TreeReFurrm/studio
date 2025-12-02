@@ -12,7 +12,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
             <Scan className="size-8 text-primary" />
-            <h1 className="text-xl font-semibold">ValuScan</h1>
+            <h1 className="text-xl font-semibold">ReFurrm SmartScan</h1>
           </div>
         </SidebarHeader>
         <SidebarContent>

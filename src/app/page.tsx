@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-8">
       <div className="text-center md:text-left">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome to ValuScan</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Welcome to ReFurrm SmartScan</h1>
         <p className="text-muted-foreground">Your AI assistant for de-cluttering and ethical selling.</p>
       </div>
 
@@ -54,7 +54,7 @@ export default function Home() {
               <span>Browse Marketplace</span>
             </CardTitle>
             <CardDescription>
-              Explore the ValuScan Exchange for unique finds from other users.
+              Explore the ReFurrm Exchange for unique finds from other users.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-grow flex items-end">
