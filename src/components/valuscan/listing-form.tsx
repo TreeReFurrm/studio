@@ -144,23 +144,23 @@ export function ListingForm() {
   };
 
 
-  if (!scanResult) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <ImageUploader onImageUpload={(uri) => {
-            if(uri) {
-                handleInitialScan(uri)
-            } else {
-                setPhotoDataUri(null);
-            }
-          }} disabled={isGenerating} />
-        </CardContent>
-      </Card>
-    );
-  }
-  
   const renderFormContent = () => {
+    if (!scanResult) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <ImageUploader onImageUpload={(uri) => {
+              if(uri) {
+                  handleInitialScan(uri)
+              } else {
+                  setPhotoDataUri(null);
+              }
+            }} disabled={isGenerating} />
+          </CardContent>
+        </Card>
+      );
+    }
+    
     if (!scanResult.isConsignmentViable) {
       return (
           <Card>
@@ -209,7 +209,7 @@ export function ListingForm() {
     }
 
     return (
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <>
         <Card>
           <CardHeader>
             <CardTitle>Review Your Listing</CardTitle>
@@ -365,14 +365,17 @@ export function ListingForm() {
               {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Sell on Consignment'}
             </Button>
         </div>
-      </form>
+      </>
     );
   }
 
   return (
     <FormProvider {...form}>
-      {renderFormContent()}
+       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {renderFormContent()}
+        </form>
     </FormProvider>
   );
 }
 
+    
