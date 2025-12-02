@@ -93,21 +93,18 @@ export default function DonationPage() {
       
       {/* --- Mission & Disclosure Block --- */}
       <Card className="bg-primary/5 border-primary/20 shadow-inner">
-        <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl text-primary">
+        <CardHeader className="text-center">
+            <CardTitle className="flex items-center gap-2 text-xl text-primary mx-auto">
                 <Info className="w-5 h-5" />
                 Our Big Mission & Transparency
             </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+        <CardContent className="text-sm">
             <p>
-                ReFurrm SmartScan prevents valuable items from being lost in estate liquidations and storage auctions through ethical preservation and community support.
+                ReFurrm SmartScan's core goal is to prevent valuable items from being lost by providing emergency, ethical support through the LEAN Foundation. Our "LEAN on ReFurrm" program provides application-based emergency interventions, like paying storage rent to prevent auction. <Button variant="link" asChild className="p-0 h-auto"><Link href="#">Learn More</Link></Button>
             </p>
-            <p className="font-semibold text-balance">
-                Our "LEAN on ReFurrm" program provides application-based emergency interventions, like paying storage rent to prevent auction. <Button variant="link" asChild className="p-0 h-auto"><Link href="#">Learn More</Link></Button>
-            </p>
-            <p className="text-xs italic text-muted-foreground">
-                **Disclosure:** We are committed to transparency. If funds are not available for an approved case, we will launch a dedicated fundraiser. Any unused funds are strictly reserved for future approved needs.
+            <p className="text-xs italic text-muted-foreground mt-2">
+                **Disclosure:** All applications are reviewed based on the highest ethical standards. If funds are not available for an approved case, we will launch a dedicated fundraiser. Any unused funds are strictly reserved for future approved needs.
             </p>
         </CardContent>
       </Card>
@@ -177,20 +174,18 @@ export default function DonationPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <Gift className="w-6 h-6" />
-                  Contribute an Item for Ethical Resale
+                  "ReFurrbish" an Item
                 </CardTitle>
                 <CardDescription>
-                  Use our AI tools to submit an item. We handle the rest.
+                  "ReFurrbish" means to donate an item for ethical resale. 100% of net proceeds fund the LEAN Foundation.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
-                  <ul className="space-y-2 text-sm text-muted-foreground mb-4 list-disc pl-5">
-                    <li>AI-powered value assessment.</li>
-                    <li>Pickup coordination by a verified Ambassador.</li>
-                    <li>100% of net proceeds go to the Big Mission Fund.</li>
-                  </ul>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Our AI assesses your item's value and an Ambassador handles pickup. It's the easiest way to make a difference.
+                  </p>
                   <Button onClick={handleItemDonate} className="w-full mt-auto" disabled={isProcessing}>
-                    Submit Item for Assessment <ArrowRight className="w-4 h-4 ml-2" />
+                    Start Item Donation <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
               </CardContent>
             </Card>
@@ -201,9 +196,6 @@ export default function DonationPage() {
                   <UserPlus className="w-6 h-6" />
                   Become an Ambassador
                 </CardTitle>
-                <CardDescription className="text-primary-foreground/80">
-                  Ready to coordinate local pickups and events? Join our leadership team.
-                </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex items-end">
                 <Button 
