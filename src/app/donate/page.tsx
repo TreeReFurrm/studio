@@ -8,9 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/firebase';
+import Link from 'next/link';
 
 export default function DonationPage() {
   const router = useRouter();
@@ -21,10 +21,10 @@ export default function DonationPage() {
 
   // Define the impact tiers for transparency
   const impactTiers = [
-    { amount: 25, label: '$25', description: 'Supports a Legacy User application review (admin time, background check).' },
-    { amount: 50, label: '$50', description: 'Covers the cost of an Ambassador\'s specialized equipment (e.g., appraisal tools).' },
-    { amount: 100, label: '$100', description: 'Pays storage rent for one Legacy User (1-2 weeks) to prevent auction loss.' },
-    { amount: 250, label: '$250', description: 'Funds a full-scale community education seminar on ethical estate liquidation.' },
+    { amount: 25, label: '$25', description: 'Supports one application review.' },
+    { amount: 50, label: '$50', description: 'Covers Ambassador equipment.' },
+    { amount: 100, label: '$100', description: 'Funds emergency storage rent.' },
+    { amount: 250, label: '$250', description: 'Funds a community seminar.' },
   ];
 
   // Handler for Monetary Donation
@@ -84,10 +84,10 @@ export default function DonationPage() {
       <header className="text-center space-y-3">
         <Heart className="w-12 h-12 text-primary mx-auto" />
         <h1 className="text-4xl font-extrabold tracking-tight">
-          Support ReFurrm Scan's Big Mission
+          Support ReFurrm SmartScan's Big Mission
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Every contribution, monetary or physical, powers our rescue network and ethical resale initiatives.
+          Your contributions power our rescue network and ethical resale initiatives.
         </p>
       </header>
       
@@ -101,13 +101,13 @@ export default function DonationPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
             <p>
-                ReFurrm Scan's core goal is to prevent valuable, historical, or sentimental items from being lost or destroyed through estate liquidations and storage auctions. We focus on **ethical preservation** and **community support**.
+                ReFurrm SmartScan prevents valuable items from being lost in estate liquidations and storage auctions through ethical preservation and community support.
             </p>
             <p className="font-semibold text-balance">
-                <span className="text-destructive">Legacy User Support:</span> Funds are primarily used for emergency interventions, such as paying a Legacy User's storage rent to prevent the contents from going to auction. This aid is **application-based**, reserved for individuals demonstrating genuine need and ethical alignment, and is not simply a debt payment service.
+                Funds are primarily used for application-based emergency interventions for individuals in need, such as paying storage rent to prevent auction. <Button variant="link" asChild className="p-0 h-auto"><Link href="#">Learn More</Link></Button>
             </p>
             <p className="text-xs italic text-muted-foreground">
-                **Disclosure:** All applications are reviewed based on the highest ethical standards. If funding is not immediately available for an approved Legacy User, **we will immediately launch a transparent, dedicated fundraiser** with full disclosure of the user's situation (while protecting their privacy) and the precise funding goal. **Any unused funds will be strictly reserved for future, approved Legacy User needs.**
+                **Disclosure:** We are committed to transparency. If funds are not available for an approved case, we will launch a dedicated fundraiser. Any unused funds are strictly reserved for future approved needs.
             </p>
         </CardContent>
       </Card>
@@ -123,7 +123,7 @@ export default function DonationPage() {
               Fund the Mission
             </CardTitle>
             <CardDescription>
-              Your financial donation fuels direct action and infrastructure to support our network.
+              Your financial donation fuels direct action and supports our network.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -139,7 +139,7 @@ export default function DonationPage() {
                   >
                     <span className="text-lg font-bold">{tier.label}</span>
                     <span className="text-xs text-muted-foreground/90 mt-1 block max-w-[90px] mx-auto text-balance">
-                        {tier.description.split('(')[0].trim()}
+                        {tier.description}
                     </span>
                   </Button>
                 ))}
@@ -180,15 +180,14 @@ export default function DonationPage() {
                   Contribute an Item for Ethical Resale
                 </CardTitle>
                 <CardDescription>
-                  Use our AI tools to submit your item. We handle the assessment and ethical resale to maximize the contribution to the Big Mission Fund.
+                  Use our AI tools to submit an item. We handle the rest.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
                   <ul className="space-y-2 text-sm text-muted-foreground mb-4 list-disc pl-5">
-                    <li>**AI Value Assessment:** We use AI to determine the item's potential resale value.</li>
-                    <li>**Resale Profitability Check:** We proceed only if the item's value guarantees a profit for the mission after all costs (shipping, fees).</li>
-                    <li>**Fulfillment Coordination:** Local pickup is arranged by a verified **Ambassador** (where available).</li>
-                    <li>**100% Mission Funding:** All net proceeds from the sale are directed to the Big Mission Fund.</li>
+                    <li>AI-powered value assessment.</li>
+                    <li>Pickup coordination by a verified Ambassador.</li>
+                    <li>100% of net proceeds go to the Big Mission Fund.</li>
                   </ul>
                   <Button onClick={handleItemDonate} className="w-full mt-auto" disabled={isProcessing}>
                     Submit Item for Assessment <ArrowRight className="w-4 h-4 ml-2" />
