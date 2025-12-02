@@ -13,11 +13,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { verifyItemValue, type VerifyItemValueOutput } from '@/ai/flows/verify-item-value';
-import { Loader2, Sparkles, DollarSign, TrendingUp, AlertCircle, BadgeCheck, ShoppingCart, ShieldCheck, ShieldAlert, FileQuestion } from 'lucide-react';
+import { Loader2, Sparkles, DollarSign, TrendingUp, AlertCircle, BadgeCheck, ShoppingCart, ShieldCheck, ShieldAlert, FileQuestion, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { useRouter } from 'next/navigation';
 
 const conditions = [
     "New (Sealed)",
@@ -50,6 +51,7 @@ export function VerificationTool() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<VerifyItemValueOutput | null>(null);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<VerificationFormData>({
     resolver: zodResolver(verificationSchema),
@@ -92,6 +94,22 @@ export function VerificationTool() {
     });
   };
   
+  const handleContinueToListing = () => {
+    if (!result) return;
+
+    const queryParams = new URLSearchParams({
+        title: result.itemName,
+        minPrice: result.minResaleValue.toString(),
+        maxPrice: result.maxResaleValue.toString(),
+        appraisalNote: result.justification,
+        isConsignmentViable: (result.authenticity.verdict !== 'POSSIBLE_FAKE').toString(),
+        photoDataUri: form.getValues('photoDataUri') || '',
+        categoryTag: result.authenticity.verdict, // This is a proxy for now
+    });
+
+    router.push(`/list?${queryParams.toString()}`);
+  }
+
   const photoDataUri = form.watch('photoDataUri');
   const itemName = form.watch('itemName');
 
@@ -116,6 +134,8 @@ export function VerificationTool() {
 
   if (result) {
     const authInfo = getAuthenticityInfo(result.authenticity.verdict);
+    const isViable = result.authenticity.verdict !== 'POSSIBLE_FAKE';
+
     return (
       <div className="flex flex-col items-center gap-6 text-center">
         <Card className="w-full">
@@ -142,6 +162,13 @@ export function VerificationTool() {
             </div>
              <p className="text-sm text-muted-foreground pt-2">{result.justification}</p>
           </CardContent>
+          {isViable && (
+            <CardFooter className="flex-col gap-4">
+                <Button onClick={handleContinueToListing} size="lg" className="w-full">
+                    Continue to Listing <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+            </CardFooter>
+          )}
         </Card>
         
         {result.authenticity.verdict === 'POSSIBLE_FAKE' && (
@@ -153,6 +180,7 @@ export function VerificationTool() {
                     <ul className="list-disc pl-5 mt-2">
                         {result.authenticity.reasons.map((reason, i) => <li key={i}>{reason}</li>)}
                     </ul>
+                     <p className="mt-2 font-semibold">This item is not eligible for consignment.</p>
                 </AlertDescription>
             </Alert>
         )}
@@ -317,3 +345,4 @@ export function VerificationTool() {
   );
 }
 
+    
